@@ -53,7 +53,16 @@ In a metric space, every open ball `B(x,r)` is open.
 Prove without using `Metric.isOpen_ball`. -/
 theorem q1_open_ball {X : Type*} [PseudoMetricSpace X] (x : X) (r : ℝ) :
     IsOpen (Metric.ball x r) := by
-  sorry
+  rw [@Metric.isOpen_iff]
+  intro y h
+  dsimp [Metric.ball] at *
+  use r - dist y x
+  constructor
+  · simp; trivial
+  · simp
+    intro a ah
+    have triangle : dist a x ≤ dist a y + dist y x := by exact dist_triangle a y x
+    grind only
 
 
 /-- **Question 2.**
