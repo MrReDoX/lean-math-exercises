@@ -72,8 +72,32 @@ If `xₙ → x` and `xₙ → y` in a metric space, then `x = y`.
 Prove without using `tendsto_nhds_unique`. -/
 theorem q2_unique_limit {X : Type*} [MetricSpace X] {u : ℕ → X} {x y : X}
     (hx : Tendsto u atTop (nhds x)) (hy : Tendsto u atTop (nhds y)) : x = y := by
-  sorry
+  rw [Metric.tendsto_atTop] at hx hy
+  suffices h : dist x y = 0 by exact dist_eq_zero.mp h
+  have crucial : ∀ ε > 0, dist x y < ε := by
+    intro ε hε
+    specialize hx (ε / 2) (by linarith)
+    specialize hy (ε / 2) (by linarith)
 
+    simp_all only [ge_iff_le, gt_iff_lt]
+    obtain ⟨w, h⟩ := hy
+    obtain ⟨w_1, h_1⟩ := hx
+
+    let N := max w w_1
+
+    specialize h N (by grind)
+    specialize h_1 N (by grind)
+
+    calc
+      dist x y ≤ dist x (u N) + dist (u N) y := by exact dist_triangle x (u N) y
+      _ < (ε / 2) + (ε / 2) := by
+        nth_rewrite 1 [dist_comm]
+        exact add_lt_add h_1 h
+      _ = ε := by simp only [add_halves]
+  have : dist x y ≥ 0 := by simp_all only [gt_iff_lt, ge_iff_le, dist_nonneg]
+  by_contra! h
+  have : dist x y > 0 := by grind only
+  grind only [#373d]
 
 /-- **Question 3.**
 
