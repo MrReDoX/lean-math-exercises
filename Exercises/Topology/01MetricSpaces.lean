@@ -106,8 +106,52 @@ For maps between metric spaces, `f` is continuous if and only if `xₙ → x` im
 Prove without using `continuous_iff_seqContinuous`. -/
 theorem q3_continuous_iff_seqContinuous {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y]
     (f : X → Y) : Continuous f ↔ SeqContinuous f := by
-  sorry
+  constructor <;> intro h
+  · unfold SeqContinuous
+    intro x p hxp
+    rw [Metric.tendsto_atTop] at *
+    rw [Metric.continuous_iff] at h
 
+    specialize h p
+
+    intro ε hε
+
+    choose δ hδ using h ε hε
+    obtain ⟨hδpos, cont⟩ := hδ
+
+    specialize hxp δ hδpos
+    choose N hN using hxp
+
+    use N
+    intro n hn
+    exact Metric.mem_ball.mp (cont (x n) (hN n hn))
+  · rw [Metric.continuous_iff]
+    unfold SeqContinuous at h
+    intro p ε hε
+    by_contra! contra
+
+    choose x hx1 hx2 using fun n : ℕ ↦ contra (1 / (n + 1)) (by positivity)
+
+    have key := @h x p (by
+      rw [Metric.tendsto_atTop]
+      intro ε₁ hε₁
+      obtain ⟨N, hN⟩ := exists_nat_gt (1 / ε₁)
+      use N
+      intro n hn
+      have h1 : dist (x n) p < 1 / (n + 1) := hx1 n
+      have h2 : (1:ℝ) / (n + 1) ≤ 1 / (N + 1) := by
+        field_simp at *
+        simp_all only [ge_iff_le, add_le_add_iff_right, Nat.cast_le]
+      have h3 : (1:ℝ) / (N + 1) < ε₁ := by
+        field_simp at *
+        grind only
+      linarith
+    )
+
+    rw [Metric.tendsto_atTop] at key
+    simp only [Function.comp_apply] at key
+    obtain ⟨N, hN⟩ := key ε hε
+    nlinarith [hx2 N, hN N (by trivial)]
 
 /-- **Question 4.**
 
