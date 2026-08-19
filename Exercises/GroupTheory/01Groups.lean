@@ -70,7 +70,10 @@ end
 
 Inverses are unique: if `a * b = 1` and `a * c = 1`, then `b = c`. -/
 theorem q1_inv_unique {a b c : G} (hb : a * b = 1) (hc : a * c = 1) : b = c := by
-  sorry
+  rw [← hc] at hb
+  apply_fun (a⁻¹ * ·) at hb
+  simp at hb
+  trivial
 
 
 /-- **Question 2.**
@@ -79,7 +82,8 @@ The inverse of a product reverses the factors: `(a * b)⁻¹ = b⁻¹ * a⁻¹`.
 
 Prove without using `mul_inv_rev`. -/
 theorem q2_inv_mul_rev (a b : G) : (a * b)⁻¹ = b⁻¹ * a⁻¹ := by
-  sorry
+  rw [inv_eq_iff_mul_eq_one]
+  simp only [mul_mul_inv_mul_cancel, mul_inv_cancel]
 
 
 /-- **Question 3.**

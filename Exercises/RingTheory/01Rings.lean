@@ -108,15 +108,23 @@ end
 Negation distributes across multiplication on the left, and zero annihilates
 multiplication. -/
 theorem q1_neg_mul (a b : R) : (-a) * b = -(a * b) ∧ 0 * a = 0 := by
-  sorry
+  constructor
+  · simp only [neg_mul]
+  · simp only [zero_mul]
 
 
 /-- **Question 2.**
 
 A unit cannot be a zero divisor: if `a` is a unit and `a*b = 0`, then `b = 0`. -/
 theorem q2_unit_not_zero_divisor {a b : R} (ha : IsUnit a) (hab : a * b = 0) : b = 0 := by
-  sorry
-
+  rw [isUnit_iff_exists] at ha
+  obtain ⟨w, h⟩ := ha
+  obtain ⟨left, right⟩ := h
+  apply_fun (w * ·) at hab
+  ring_nf at hab
+  rw [right] at hab
+  simp at hab
+  trivial
 
 /-- **Question 3.**
 
@@ -131,7 +139,10 @@ theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p
 
 The residue class of `5` is a unit modulo `12`. -/
 theorem q4_zmod12_unit : IsUnit (5 : ZMod 12) := by
-  sorry
+  rw [@isUnit_iff_exists]
+  use 5
+  simp_all only [and_self]
+  trivial
 
 
 /-- **Question 5.**

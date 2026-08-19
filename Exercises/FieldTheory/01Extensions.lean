@@ -44,7 +44,12 @@ Every complex number has unique real and imaginary coordinates: prove that
 each `z : ℂ` can be written in exactly one way as `a + b * i` with `a, b : ℝ`. -/
 theorem q1_complex_coordinates (z : ℂ) :
     ∃! ab : ℝ × ℝ, z = (ab.1 : ℂ) + ab.2 * Complex.I := by
-  sorry
+  use ⟨z.re, z.im⟩
+  constructor <;> simp
+  · intro a b h
+    rw [Complex.ext_iff] at h
+    simp_all only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero, Complex.ofReal_im,
+      Complex.I_im, mul_one, sub_self, add_zero, Complex.add_im, Complex.mul_im, zero_add, and_self]
 
 
 /-- **Question 2.**
@@ -52,7 +57,11 @@ theorem q1_complex_coordinates (z : ℂ) :
 If `a + bi = 0` with `a, b : ℝ`, then `a = b = 0`. -/
 theorem q2_one_i_linear_independent (a b : ℝ) :
     (a : ℂ) + b * Complex.I = 0 → a = 0 ∧ b = 0 := by
-  sorry
+  intro h
+  rw [Complex.ext_iff] at h
+  constructor <;> simp_all only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
+    Complex.ofReal_im, Complex.I_im, mul_one, sub_self, add_zero, Complex.zero_re, Complex.add_im, Complex.mul_im,
+    zero_add, Complex.zero_im]
 
 
 /-- **Question 3.**
@@ -62,7 +71,11 @@ The vectors `1` and `i` span `ℂ` as a real vector space.
 Prove without using `Complex.basisOneI`. -/
 theorem q3_one_i_spans_complex :
     Submodule.span ℝ ({(1 : ℂ), Complex.I} : Set ℂ) = ⊤ := by
-  sorry
+  rw [@Submodule.eq_top_iff']
+  intro z
+  rw [@Submodule.mem_span_pair]
+  use z.re, z.im
+  simp only [Complex.real_smul, mul_one, Complex.re_add_im]
 
 
 /-- **Question 4.**
