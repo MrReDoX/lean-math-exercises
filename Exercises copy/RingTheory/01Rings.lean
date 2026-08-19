@@ -148,10 +148,8 @@ theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p
 
 /-- **Question 4.**
 
-The coordinate-sum function `(m, n) ↦ m + n` from `ℤ × ℤ` to `ℤ` is not a
-non-unital ring homomorphism. -/
-theorem q4_coordinate_sum_not_nonunital_ring_hom :
-    ¬ ∃ f : ℤ × ℤ →ₙ+* ℤ, ∀ x : ℤ × ℤ, f x = x.1 + x.2 := by
+The residue class of `5` is a unit modulo `12`. -/
+theorem q4_zmod12_unit : IsUnit (5 : ZMod 12) := by
   sorry
 
 
