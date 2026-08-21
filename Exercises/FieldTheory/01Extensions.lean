@@ -178,7 +178,24 @@ Every complex number is integral over `ℝ`.
 Prove directly from a quadratic relation, without using `IsAlgebraic.of_finite` or
 `Algebra.IsAlgebraic.isAlgebraic`. -/
 theorem q8_every_complex_integral (z : ℂ) : IsIntegral ℝ z := by
-  sorry
+  use Polynomial.X ^ 2 - (2 * z.re) • Polynomial.X + Polynomial.C (z.re ^ 2 + z.im ^ 2)
+
+  simp_all only [map_add, map_pow, Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_X_pow,
+    Polynomial.eval₂_smul, Complex.coe_algebraMap, Complex.ofReal_mul, Complex.ofReal_ofNat, Polynomial.eval₂_X,
+    Polynomial.eval₂_pow', Polynomial.eval₂_C]
+  apply And.intro
+  · monicity!
+    right
+    simp_all only [Polynomial.coeff_X, OfNat.one_ne_ofNat, ↓reduceIte]
+  · rw [Complex.ext_iff]
+    simp_all only [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.re_ofNat, Complex.ofReal_re,
+      Complex.im_ofNat, Complex.ofReal_im, mul_zero, sub_zero, Complex.mul_im, zero_mul, add_zero, Complex.zero_re,
+      Complex.add_im, Complex.sub_im, Complex.zero_im]
+    apply And.intro
+    · simp only [Complex.mul_re, pow_two, Complex.ofReal_re]
+      ring_nf; norm_num
+    · simp only [Complex.mul_im, pow_two, Complex.ofReal_im]
+      ring_nf
 
 
 /-- **Question 9.**
@@ -204,7 +221,7 @@ theorem q10_quadratic_extension_has_no_proper_intermediate_field (F : Intermedia
 A scalar `a` is a root of the linear polynomial `X - a`. -/
 theorem q11_root_of_linear_polynomial (K : Type*) [Field K] (a : K) :
     (Polynomial.X - Polynomial.C a).eval a = 0 := by
-  sorry
+  simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_self]
 
 
 /-- **Question 12.**
@@ -214,6 +231,9 @@ The polynomial indeterminate `X ∈ K[X]` is transcendental over `K`.
 Prove without using `Polynomial.transcendental_X`. -/
 theorem q12_indeterminate_transcendental (K : Type*) [Field K] :
     Transcendental K (Polynomial.X : K[X]) := by
-  sorry
+  unfold Transcendental
+  intro h
+  unfold IsAlgebraic at h
+  simp_all only [ne_eq, Polynomial.aeval_X_left, AlgHom.coe_id, id_eq, not_and_self, exists_const]
 
 end Exercises.FieldTheory.Extensions
