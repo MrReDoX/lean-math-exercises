@@ -51,7 +51,15 @@ end
 Every `x ∈ ℝ` can be written uniquely as `x = z + u`, where `z ∈ ℤ` and `0 ≤ u < 1`. -/
 theorem q1_integer_fractional_decomposition (x : ℝ) :
     ∃! p : ℤ × ℝ, x = (p.1 : ℝ) + p.2 ∧ 0 ≤ p.2 ∧ p.2 < 1 := by
-  sorry
+  use ⟨Int.floor x, Int.fract x⟩
+  simp_all only [Int.floor_add_fract, Int.fract_nonneg, true_and, Int.floor_intCast_add, Int.fract_intCast_add,
+    and_imp, Prod.forall, Prod.mk.injEq, left_eq_add, Int.floor_eq_zero_iff, mem_Ico, and_self]
+  apply And.intro
+  · exact Int.fract_lt_one x
+  · intro a b a_1 a_2 a_3
+    subst a_1
+    rw [Int.fract_eq_self.mpr]
+    simp_all only [and_self]
 
 
 /-- **Question 2.**
@@ -60,7 +68,10 @@ For every `x ∈ ℝ`, there exists `n ∈ ℕ` such that `x < n`.
 
 Prove without using `exists_nat_gt`. -/
 theorem q2_naturals_unbounded (x : ℝ) : ∃ n : ℕ, x < n := by
-  sorry
+  use Nat.ceil x + 1
+  simp_all only [Nat.cast_add, Nat.cast_one]
+  have : x ≤ Nat.ceil x := by exact Nat.le_ceil x
+  nlinarith
 
 
 /-- **Question 3.**
@@ -70,7 +81,13 @@ For every `ε > 0`, there exists `n ∈ ℕ` with `0 < n` and `1/n < ε`.
 Prove without using `tendsto_one_div_atTop_nhds_zero_nat`. -/
 theorem q3_archimedean_reciprocal {ε : ℝ} (hε : 0 < ε) :
     ∃ n : ℕ, 0 < n ∧ 1 / (n : ℝ) < ε := by
-  sorry
+  choose n hn using q2_naturals_unbounded (1 / ε)
+  have hn_pos : 0 < (n + 1 : ℝ) := by grind only
+  have : 1 / (n + 1 : ℝ) < ε := by
+    field_simp at *
+    nlinarith
+  use n + 1
+  grind only
 
 
 /-- **Question 4.**
