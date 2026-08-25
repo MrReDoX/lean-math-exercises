@@ -65,7 +65,7 @@ theorem q1_reciprocal_tends_to_zero :
     Nat.ceil_le, dist_zero_right, norm_inv, Real.norm_eq_abs]
   rw [abs_of_pos (by grind)]
   field_simp at *
-  grind => linarith
+  linarith
 
 
 /-- **Question 2.**
