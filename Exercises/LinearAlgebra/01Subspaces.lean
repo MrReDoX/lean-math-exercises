@@ -76,7 +76,15 @@ universal property that characterizes `U ⊔ W` as the least subspace containing
 Prove without using `sup_le_iff`. -/
 theorem q1_sup_le_iff (U W X : Submodule K V) :
     U ⊔ W ≤ X ↔ U ≤ X ∧ W ≤ X := by
-  sorry
+  constructor <;> intro h
+  · constructor
+    · have := @le_sup_left (Submodule K V) _ U W
+      -- have := le_sup_left U W
+      exact (Submodule.toAddSubgroup_le U X).mp fun ⦃x⦄ a => h (this a)
+    · have := @le_sup_right (Submodule K V) _ U W
+      exact (Submodule.toAddSubgroup_le W X).mp fun ⦃x⦄ a => h (this a)
+  · obtain ⟨left, right⟩ := h
+    exact sup_le left right
 
 
 /-- **Question 2.**
