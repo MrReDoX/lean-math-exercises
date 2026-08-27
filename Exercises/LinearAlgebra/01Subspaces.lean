@@ -79,7 +79,6 @@ theorem q1_sup_le_iff (U W X : Submodule K V) :
   constructor <;> intro h
   · constructor
     · have := @le_sup_left (Submodule K V) _ U W
-      -- have := le_sup_left U W
       exact (Submodule.toAddSubgroup_le U X).mp fun ⦃x⦄ a => h (this a)
     · have := @le_sup_right (Submodule K V) _ U W
       exact (Submodule.toAddSubgroup_le W X).mp fun ⦃x⦄ a => h (this a)
@@ -95,9 +94,24 @@ For the forward implication, define the subspace `S` of vectors that have such a
 Show that `U ≤ S` and `W ≤ S`, then use Question 1 to conclude `U ⊔ W ≤ S`.
 
 Prove without using `Submodule.mem_sup` (or `Submodule.mem_sup'`). -/
+
 theorem q2_mem_sup_iff (U W : Submodule K V) (x : V) :
     x ∈ U ⊔ W ↔ ∃ u ∈ U, ∃ w ∈ W, u + w = x := by
-  sorry
+  constructor <;> intro h
+  ·
+    let S : Submodule K V := {
+      carrier := {x | ∃ u ∈ U, ∃ w ∈ W, u + w = x}
+      add_mem' a b := by sorry
+      zero_mem' := by sorry
+      smul_mem' := by sorry
+    }
+    have : U ≤ S := by sorry
+    have : W ≤ S := by sorry
+    have : U ⊔ W ≤ S := by sorry
+    exact Set.mem_image2.mp (this h)
+  · sorry
+
+
 
 
 /-- **Question 3.**
@@ -177,7 +191,18 @@ The set of vectors in `ℝ³` whose coordinates sum to `0` is a subspace: produc
 theorem q9_sumZero_isSubspace :
     ∃ U : Submodule ℝ (Fin 3 → ℝ),
       (U : Set (Fin 3 → ℝ)) = {v | v 0 + v 1 + v 2 = 0} := by
-  sorry
+  let f : (Fin 3 → ℝ) →ₗ[ℝ] ℝ := {
+    toFun v := v 0 + v 1 + v 2
+    map_add' x y := by
+      simp_all only [Fin.isValue, Pi.add_apply]
+      ring_nf
+    map_smul' m x := by
+      simp_all only [Fin.isValue, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+      ring_nf
+  }
+  use LinearMap.ker f
+  simp_all only [Fin.isValue, f]
+  trivial
 
 
 /-- **Question 10.**
