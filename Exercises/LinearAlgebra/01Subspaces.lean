@@ -211,7 +211,26 @@ subspace has underlying set `{v | v 0 = 1}`. -/
 theorem q10_firstCoordOne_notSubspace :
     ¬ ∃ U : Submodule ℝ (Fin 3 → ℝ),
       (U : Set (Fin 3 → ℝ)) = {v | v 0 = 1} := by
-  sorry
+  by_contra! h
+  obtain ⟨w, h⟩ := h
+  have counter : ![1, 0, 0] ∈ w := by
+    rw [← SetLike.mem_coe, h]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero]
+
+  have : ![2, 0, 0] ∈ w := by
+    have : ![(2 : ℝ), 0, 0] = ![1, 0, 0] + ![1, 0, 0] := by
+      simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.add_cons, Matrix.head_cons,
+        Matrix.tail_cons, add_zero, Matrix.empty_add_empty, Matrix.vecCons_inj, and_true]
+      ring_nf
+    rw [this]
+    exact (Submodule.add_mem_iff_right w counter).mpr counter
+
+  have : ![2, 0, 0] ∈ (w : Set (Fin 3 → ℝ)) := by
+    exact (Submodule.mem_carrier w).mp this
+
+  simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Set.mem_ofPred_eq, Matrix.cons_val_zero,
+    OfNat.ofNat_ne_one]
 
 
 /-- **Question 11.**
@@ -221,6 +240,25 @@ subspace. -/
 theorem q11_axes_notSubspace :
     ¬ ∃ U : Submodule ℝ (Fin 2 → ℝ),
       (U : Set (Fin 2 → ℝ)) = {v | v 0 * v 1 = 0} := by
-  sorry
+  simp_all only [Fin.isValue, mul_eq_zero, not_exists]
+  intro x
+  apply Aesop.BuiltinRules.not_intro
+  intro a
+  have candidat : ![(1 : ℝ), 0] ∈ x := by
+    rw [← SetLike.mem_coe, a]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero, one_ne_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, or_true]
+  have deputat : ![0, (1 : ℝ)] ∈ x := by
+    rw [← SetLike.mem_coe, a]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, one_ne_zero, or_false]
+  have counter : ![1, 1] ∈ (x : Set (Fin 2 → ℝ)) := by
+    rw [SetLike.mem_coe]
+    have := x.add_mem candidat deputat
+    simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.add_cons,
+      Matrix.head_cons, add_zero, Matrix.tail_cons, zero_add, Matrix.empty_add_empty]
+  rw [a] at counter
+  simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Set.mem_ofPred_eq, Matrix.cons_val_zero, one_ne_zero,
+    Matrix.cons_val_one, Matrix.cons_val_fin_one, or_self]
 
 end Exercises.LinearAlgebra.Subspaces
