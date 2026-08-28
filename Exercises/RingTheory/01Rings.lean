@@ -6,6 +6,7 @@ import Mathlib.Algebra.CharP.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 import Mathlib.Algebra.Module.Basic
+
 /-!
 # Exercises — RingTheory / Rings, Domains & Fields
 

@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.Matrix.ToLin
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.Data.Real.Basic
+
 /-!
 # Exercises — LinearAlgebra / Matrices
 

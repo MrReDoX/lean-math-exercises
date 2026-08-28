@@ -6,6 +6,7 @@ import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Topology.MetricSpace.Contracting
+
 /-!
 # Exercises — Analysis / Differentiation
 

@@ -5,6 +5,7 @@ import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Nat.Totient
 import Mathlib.RingTheory.RootsOfUnity.Complex
+
 /-!
 # Exercises — GroupTheory / Cyclic
 

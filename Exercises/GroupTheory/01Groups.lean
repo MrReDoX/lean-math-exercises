@@ -4,6 +4,7 @@ import Mathlib.Algebra.Group.Subgroup.Lattice
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.GroupTheory.SpecificGroups.Quaternion
 import Mathlib.Data.ZMod.Basic
+
 /-!
 # Exercises — GroupTheory / Groups
 

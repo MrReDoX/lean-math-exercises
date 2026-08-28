@@ -6,6 +6,7 @@ import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Topology.Order.IntermediateValue
+
 /-!
 # Exercises — Analysis / Elementary Functions
 

@@ -5,6 +5,7 @@ import Mathlib.GroupTheory.IndexNormal
 import Mathlib.GroupTheory.Abelianization.Defs
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.GroupTheory.SpecificGroups.Alternating
+
 /-!
 # Exercises — GroupTheory / Normal Subgroups & Quotients
 

@@ -6,6 +6,7 @@ import Mathlib.GroupTheory.PGroup
 import Mathlib.GroupTheory.Perm.Basic
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.GroupTheory.OrderOfElement
+
 /-!
 # Exercises — GroupTheory / Group Actions
 

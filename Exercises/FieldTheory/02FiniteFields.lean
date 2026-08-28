@@ -4,6 +4,7 @@ import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.FieldTheory.Finite.GaloisField
 import Mathlib.Algebra.CharP.Lemmas
 import Mathlib.LinearAlgebra.Basis.VectorSpace
+
 /-!
 # Exercises — FieldTheory / Finite Fields
 

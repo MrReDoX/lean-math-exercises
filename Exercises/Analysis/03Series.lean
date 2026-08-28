@@ -3,6 +3,7 @@ import Mathlib.Tactic
 import Mathlib.Analysis.Normed.Group.InfiniteSum
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecificLimits.Normed
+
 /-!
 # Exercises — Analysis / Series
 

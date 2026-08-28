@@ -5,6 +5,7 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Topology.ContinuousOn
 import Mathlib.Topology.Order.IntermediateValue
+
 /-!
 # Exercises — Analysis / FunctionSequences
 

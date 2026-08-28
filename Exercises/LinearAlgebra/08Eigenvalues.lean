@@ -7,6 +7,7 @@ import Mathlib.LinearAlgebra.Matrix.DotProduct
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Real.Basic
+
 /-!
 # Exercises — LinearAlgebra / Eigenvalues
 

@@ -3,6 +3,7 @@ import Mathlib.Tactic
 import Mathlib.FieldTheory.SplittingField.Construction
 import Mathlib.FieldTheory.SplittingField.IsSplittingField
 import Mathlib.Analysis.Complex.Polynomial.Basic
+
 /-!
 # Exercises — FieldTheory / Splitting Fields and Algebraic Roots
 

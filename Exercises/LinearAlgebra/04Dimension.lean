@@ -3,6 +3,7 @@ import Mathlib.Tactic
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.Data.Real.Basic
+
 /-!
 # Exercises — LinearAlgebra / Dimension
 

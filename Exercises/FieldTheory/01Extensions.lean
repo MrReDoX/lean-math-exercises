@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Algebraic.Basic
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 import Mathlib.NumberTheory.Real.Irrational
 import Mathlib.FieldTheory.IntermediateField.Algebraic
+
 /-!
 # Exercises — FieldTheory / Extensions and Degree
 

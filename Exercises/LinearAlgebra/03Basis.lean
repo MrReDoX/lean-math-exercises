@@ -5,6 +5,7 @@ import Mathlib.LinearAlgebra.Basis.VectorSpace
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.Data.Real.Basic
+
 /-!
 # Exercises — LinearAlgebra / Basis
 

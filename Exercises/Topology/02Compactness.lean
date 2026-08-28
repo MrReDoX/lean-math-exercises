@@ -4,6 +4,7 @@ import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.MetricSpace.Bounded
 import Mathlib.Topology.UniformSpace.HeineCantor
 import Mathlib.Topology.Instances.Real.Lemmas
+
 /-!
 # Exercises — Topology / Compactness
 

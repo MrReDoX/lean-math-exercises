@@ -4,6 +4,7 @@ import Mathlib.Topology.Connected.Basic
 import Mathlib.Topology.Defs.Induced
 import Mathlib.Topology.Order
 import Mathlib.Topology.Instances.Real.Lemmas
+
 /-!
 # Exercises — Topology / Connectedness
 
