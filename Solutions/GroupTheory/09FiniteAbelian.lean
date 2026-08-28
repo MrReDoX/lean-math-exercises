@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.FiniteAbelian.Basic
 import Mathlib.GroupTheory.Exponent
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Tactic
-
 namespace Solutions.GroupTheory.FiniteAbelian
 
 

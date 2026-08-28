@@ -1,10 +1,10 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.QuotientGroup.Basic
 import Mathlib.GroupTheory.IndexNormal
 import Mathlib.GroupTheory.Abelianization.Defs
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.GroupTheory.SpecificGroups.Alternating
-import Mathlib.Tactic
-
 namespace Solutions.GroupTheory.Quotients
 
 variable {G H : Type*} [Group G] [Group H]

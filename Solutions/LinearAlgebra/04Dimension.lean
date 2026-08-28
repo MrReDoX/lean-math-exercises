@@ -1,8 +1,8 @@
+import Mathlib.Tactic
+
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
-
 namespace Solutions.LinearAlgebra.Dimension
 
 open Module

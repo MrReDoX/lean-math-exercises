@@ -1,3 +1,5 @@
+import Mathlib.Tactic
+
 import Mathlib.LinearAlgebra.Eigenspace.Basic
 import Mathlib.LinearAlgebra.Matrix.ToLin
 import Mathlib.LinearAlgebra.Matrix.ConjTranspose
@@ -5,8 +7,6 @@ import Mathlib.LinearAlgebra.Matrix.DotProduct
 import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 import Mathlib.Data.Complex.Basic
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
-
 /-!
 # Exercises — LinearAlgebra / Eigenvalues
 

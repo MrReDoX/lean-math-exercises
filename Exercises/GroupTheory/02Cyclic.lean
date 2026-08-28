@@ -1,10 +1,10 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Nat.Totient
 import Mathlib.RingTheory.RootsOfUnity.Complex
-import Mathlib.Tactic
-
 /-!
 # Exercises — GroupTheory / Cyclic
 

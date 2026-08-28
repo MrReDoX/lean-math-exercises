@@ -1,7 +1,7 @@
-import Solutions.Analysis.«05Differentiation»
-import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Tactic
 
+import Solutions.Analysis.«05Differentiation»
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 namespace Solutions.Analysis.RiemannIntegration
 
 open MeasureTheory Set

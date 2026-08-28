@@ -1,8 +1,8 @@
+import Mathlib.Tactic
+
 import Mathlib.RingTheory.Ideal.Int
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.RingTheory.Polynomial.Ideal
-import Mathlib.Tactic
-
 namespace Solutions.RingTheory.Ideals
 
 open scoped Polynomial

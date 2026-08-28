@@ -1,11 +1,11 @@
+import Mathlib.Tactic
+
 import Exercises.Analysis.«05Differentiation»
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Topology.Order.IntermediateValue
-import Mathlib.Tactic
-
 /-!
 # Exercises — Analysis / Elementary Functions
 

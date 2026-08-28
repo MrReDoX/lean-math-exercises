@@ -1,6 +1,6 @@
-import Mathlib.GroupTheory.Transfer
 import Mathlib.Tactic
 
+import Mathlib.GroupTheory.Transfer
 namespace Solutions.GroupTheory.Sylow
 
 variable {G : Type*} [Group G]

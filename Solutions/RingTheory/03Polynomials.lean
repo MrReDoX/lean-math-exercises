@@ -1,3 +1,5 @@
+import Mathlib.Tactic
+
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Algebra.Polynomial.Degree.Operations
@@ -5,8 +7,6 @@ import Mathlib.Algebra.Polynomial.FieldDivision
 import Mathlib.Algebra.Polynomial.SpecificDegree
 import Mathlib.Data.ZMod.Basic
 import Mathlib.RingTheory.IntegralDomain
-import Mathlib.Tactic
-
 namespace Solutions.RingTheory.Polynomials
 
 open scoped Polynomial

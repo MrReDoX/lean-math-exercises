@@ -1,8 +1,8 @@
+import Mathlib.Tactic
+
 import Mathlib.FieldTheory.SplittingField.Construction
 import Mathlib.FieldTheory.SplittingField.IsSplittingField
 import Mathlib.Analysis.Complex.Polynomial.Basic
-import Mathlib.Tactic
-
 namespace Solutions.FieldTheory.SplittingFields
 
 open scoped Polynomial

@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Topology.ContinuousOn
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Topology.Order.IntermediateValue
-import Mathlib.Tactic
-
 /-!
 # Exercises — Analysis / ContinuousFunctions
 

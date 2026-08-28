@@ -1,3 +1,5 @@
+import Mathlib.Tactic
+
 import Mathlib.Algebra.Group.Hom.Basic
 import Mathlib.Algebra.Group.Subgroup.Ker
 import Mathlib.GroupTheory.Perm.Basic
@@ -7,8 +9,6 @@ import Mathlib.GroupTheory.SpecificGroups.Dihedral
 import Mathlib.Algebra.Group.Opposite
 import Mathlib.Data.ZMod.Basic
 import Mathlib.CategoryTheory.Groupoid
-import Mathlib.Tactic
-
 namespace Solutions.GroupTheory.Homomorphisms
 
 open CategoryTheory

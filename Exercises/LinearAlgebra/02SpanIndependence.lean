@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.LinearAlgebra.Span.Basic
 import Mathlib.LinearAlgebra.LinearIndependent.Basic
 import Mathlib.Algebra.Polynomial.Basis
 import Mathlib.RingTheory.Polynomial.Basic
-import Mathlib.Tactic
-
 /-!
 # Exercises — LinearAlgebra / SpanIndependence
 

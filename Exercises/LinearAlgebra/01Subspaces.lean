@@ -1,5 +1,6 @@
-import Mathlib.Algebra.Module.Submodule.Lattice
 import Mathlib.Tactic
+
+import Mathlib.Algebra.Module.Submodule.Lattice
 import Mathlib.Data.Real.Basic
 
 /-!

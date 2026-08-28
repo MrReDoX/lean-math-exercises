@@ -1,3 +1,5 @@
+import Mathlib.Tactic
+
 import Mathlib.FieldTheory.Tower
 import Mathlib.FieldTheory.Minpoly.Field
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Basic
@@ -5,8 +7,6 @@ import Mathlib.RingTheory.Algebraic.Basic
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 import Mathlib.NumberTheory.Real.Irrational
 import Mathlib.FieldTheory.IntermediateField.Algebraic
-import Mathlib.Tactic
-
 namespace Solutions.FieldTheory.Extensions
 
 open scoped IntermediateField Polynomial

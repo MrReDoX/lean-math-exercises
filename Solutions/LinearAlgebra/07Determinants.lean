@@ -1,8 +1,8 @@
+import Mathlib.Tactic
+
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Data.Real.Basic
-import Mathlib.Tactic
-
 namespace Solutions.LinearAlgebra.Determinants
 
 open Matrix

@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.Analysis.Normed.Group.InfiniteSum
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecificLimits.Normed
 import Solutions.Analysis.«02RealSequences»
-import Mathlib.Tactic
-
 namespace Solutions.Analysis.Series
 
 open Filter BigOperators Finset

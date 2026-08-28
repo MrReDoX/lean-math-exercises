@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.MetricSpace.Bounded
 import Mathlib.Topology.UniformSpace.HeineCantor
 import Mathlib.Topology.Instances.Real.Lemmas
-import Mathlib.Tactic
-
 namespace Solutions.Topology.Compactness
 
 open Set Filter Uniformity

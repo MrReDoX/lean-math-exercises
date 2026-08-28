@@ -1,10 +1,10 @@
+import Mathlib.Tactic
+
 import Mathlib.Analysis.Calculus.Deriv.Abs
 import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Topology.ContinuousOn
 import Mathlib.Topology.Order.IntermediateValue
-import Mathlib.Tactic
-
 /-!
 # Exercises — Analysis / FunctionSequences
 

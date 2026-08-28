@@ -1,8 +1,8 @@
+import Mathlib.Tactic
+
 import Mathlib.Topology.MetricSpace.Cauchy
 import Mathlib.Topology.MetricSpace.Lipschitz
 import Mathlib.Topology.Sequences
-import Mathlib.Tactic
-
 /-!
 # Exercises — Topology / MetricSpaces
 

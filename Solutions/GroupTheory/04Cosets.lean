@@ -1,3 +1,5 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.Coset.Card
 import Mathlib.GroupTheory.OrderOfElement
 import Mathlib.GroupTheory.Index
@@ -5,8 +7,6 @@ import Mathlib.GroupTheory.SpecificGroups.Cyclic
 import Mathlib.GroupTheory.SpecificGroups.Alternating
 import Mathlib.Data.ZMod.Basic
 import Mathlib.FieldTheory.Finite.Basic
-import Mathlib.Tactic
-
 namespace Solutions.GroupTheory.Cosets
 
 open Pointwise

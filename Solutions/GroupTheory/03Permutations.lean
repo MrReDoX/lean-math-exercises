@@ -1,9 +1,9 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.GroupTheory.SpecificGroups.Alternating
 import Mathlib.GroupTheory.SpecificGroups.Dihedral
-import Mathlib.Tactic
-
 namespace Solutions.GroupTheory.Permutations
 
 open Equiv Equiv.Perm

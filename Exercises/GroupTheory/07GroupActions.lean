@@ -1,11 +1,11 @@
+import Mathlib.Tactic
+
 import Mathlib.GroupTheory.GroupAction.Quotient
 import Mathlib.GroupTheory.ClassEquation
 import Mathlib.GroupTheory.PGroup
 import Mathlib.GroupTheory.Perm.Basic
 import Mathlib.GroupTheory.Perm.Cycle.Type
 import Mathlib.GroupTheory.OrderOfElement
-import Mathlib.Tactic
-
 /-!
 # Exercises — GroupTheory / Group Actions
 

@@ -1,11 +1,11 @@
+import Mathlib.Tactic
+
 import Mathlib.Algebra.Ring.Basic
 import Mathlib.Algebra.Ring.NonZeroDivisors
 import Mathlib.Algebra.CharP.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 import Mathlib.Algebra.Module.Basic
-import Mathlib.Tactic
-
 namespace Solutions.RingTheory.Rings
 
 variable {R : Type*} [CommRing R]

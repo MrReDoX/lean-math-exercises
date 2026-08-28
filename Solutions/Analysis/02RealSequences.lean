@@ -1,7 +1,7 @@
-import Mathlib.Analysis.SpecificLimits.Basic
-import Mathlib.Topology.Sequences
 import Mathlib.Tactic
 
+import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Topology.Sequences
 namespace Solutions.Analysis.RealSequences
 
 open Filter Set

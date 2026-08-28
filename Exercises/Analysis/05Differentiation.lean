@@ -1,11 +1,11 @@
+import Mathlib.Tactic
+
 import Exercises.Analysis.«04ContinuousFunctions»
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Pow
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
 import Mathlib.Topology.MetricSpace.Contracting
-import Mathlib.Tactic
-
 /-!
 # Exercises — Analysis / Differentiation
 
