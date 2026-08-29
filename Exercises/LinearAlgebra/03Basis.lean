@@ -77,7 +77,15 @@ For a basis `(bᵢ)`, coordinates are unique: if `∑ᵢ cᵢ bᵢ = ∑ᵢ dᵢ
 Prove without using `Basis.ext_elem`. -/
 theorem q1_coords_unique (c d : Fin n → K)
     (h : ∑ i, c i • b i = ∑ i, d i • b i) : c = d := by
-  sorry
+  have := congrArg b.equivFun h
+  simp only [map_sum, map_smul] at this
+  funext j
+  have hj := congrFun this j
+  rw [Finset.sum_apply, Finset.sum_apply] at hj
+  simp only [Pi.smul_apply, smul_eq_mul] at hj
+  simp_all only [Basis.equivFun_apply, Basis.repr_self, Basis.equivFun_self, mul_ite, mul_one,
+    mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
+
 
 
 /-- **Question 2.**
@@ -87,7 +95,13 @@ A linear map is determined by its values on a basis: if `f (bᵢ) = g (bᵢ)` fo
 
 Prove without using `Basis.ext`. -/
 theorem q2_map_determined (f g : V →ₗ[K] W) (h : ∀ i, f (b i) = g (b i)) : f = g := by
-  sorry
+  ext v
+  rw [← Basis.sum_repr b v]
+  simp only [map_sum, map_smul]
+  exact
+    Fintype.sum_congr (fun a => (b.repr v) a • f (b a)) (fun a => (b.repr v) a • g (b a)) fun a =>
+      congrArg (HSMul.hSMul ((b.repr v) a)) (h a)
+
 
 
 /-- **Question 3.**
