@@ -88,7 +88,6 @@ theorem q1_coords_unique (c d : Fin n → K)
     mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ↓reduceIte]
 
 
-
 /-- **Question 2.**
 
 A linear map is determined by its values on a basis: if `f (bᵢ) = g (bᵢ)` for every `i`, then
@@ -104,13 +103,16 @@ theorem q2_map_determined (f g : V →ₗ[K] W) (h : ∀ i, f (b i) = g (b i)) :
       congrArg (HSMul.hSMul ((b.repr v) a)) (h a)
 
 
-
 /-- **Question 3.**
 
 The basis values may be prescribed arbitrarily: given any target vectors `(wᵢ)` in `W`, there is
 a linear map `f : V → W` with `f (bᵢ) = wᵢ` for every `i`. -/
 theorem q3_prescribe_map (w : Fin n → W) : ∃ f : V →ₗ[K] W, ∀ i, f (b i) = w i := by
-  sorry
+  let f : Fin n → W := fun i ↦ w i
+  use Basis.constr b K (fun i ↦ w i)
+  intro i
+  simp only [Basis.constr_apply_fintype, Basis.equivFun_self, ite_smul, one_smul, zero_smul,
+    Finset.sum_ite_eq, Finset.mem_univ, ↓reduceIte]
 
 
 /-- **Question 4.**
@@ -118,7 +120,21 @@ theorem q3_prescribe_map (w : Fin n → W) : ∃ f : V →ₗ[K] W, ∀ i, f (b 
 The vectors `(1,1)` and `(1,−1)` form a basis of `ℝ²`. -/
 theorem q4_isBasis_concrete :
     ∃ B : Basis (Fin 2) ℝ (Fin 2 → ℝ), ⇑B = ![(![1, 1] : Fin 2 → ℝ), ![1, -1]] := by
-  sorry
+  let v : Fin 2 → (Fin 2 → ℝ) := ![(![1, 1] : Fin 2 → ℝ), ![1, -1]]
+  have v_li : LinearIndependent ℝ v := by
+    simp [v]
+    rw [@Fintype.linearIndependent_iff]
+    intro g a i
+    simp_all only [Fin.sum_univ_two, Fin.isValue, Matrix.cons_val_zero, Matrix.smul_cons, smul_eq_mul, mul_one,
+      Matrix.smul_empty, Matrix.cons_val_one, Matrix.cons_val_fin_one, mul_neg, Matrix.add_cons, Matrix.head_cons,
+      Matrix.tail_cons, Matrix.empty_add_empty, Matrix.cons_eq_zero_iff, Matrix.zero_empty, and_true]
+    obtain ⟨left, right⟩ := a
+    fin_cases i <;> grind only
+  let v_basis := basisOfLinearIndependentOfCardEqFinrank v_li (by simp only [Fintype.card_fin,
+    finrank_fintype_fun_eq_card])
+  use v_basis
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [v_basis, v]
 
 
 /-- **Question 5.**
@@ -127,7 +143,7 @@ The nonzero vector `(1,2)` extends to a basis of `ℝ²`: there is a basis of `�
 vector is `(1,2)`. -/
 theorem q5_extend_concrete :
     ∃ B : Basis (Fin 2) ℝ (Fin 2 → ℝ), B 0 = ![1, 2] := by
-  sorry
+  #check Basis.extend
 
 
 /-- **Question 6.**
