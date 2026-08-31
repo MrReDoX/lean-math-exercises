@@ -142,21 +142,29 @@ The nonzero vector `(1,2)` extends to a basis of `ℝ²`: there is a basis of `�
 vector is `(1,2)`. -/
 theorem q5_extend_concrete :
     ∃ B : Basis (Fin 2) ℝ (Fin 2 → ℝ), B 0 = ![1, 2] := by
-  #check Basis.extend
+  sorry
 
 
 /-- **Question 6.**
 
 Any three vectors in `ℝ²` are linearly dependent. -/
 theorem q6_too_many_dependent (v : Fin 3 → (Fin 2 → ℝ)) : ¬ LinearIndependent ℝ v := by
-  sorry
+  by_contra! h
+  have := LinearIndependent.fintype_card_le_finrank h
+  simp_all only [Fintype.card_fin, finrank_fintype_fun_eq_card, Nat.reduceLeDiff]
 
 
 /-- **Question 7.**
 
 No single vector spans `ℝ²`. -/
 theorem q7_too_few_dont_span : ¬ ∃ v : Fin 2 → ℝ, Submodule.span ℝ {v} = ⊤ := by
-  sorry
+  by_contra h
+  obtain ⟨w, h⟩ := h
+  -- #check finrank_span_le_card {w}
+  have h_le := finrank_span_le_card (R := ℝ) ({w} : Set (Fin 2 → ℝ))
+  simp_all only [Set.toFinset_singleton, Finset.card_singleton]
+  rw [h] at h_le
+  simp_all only [finrank_top, finrank_fintype_fun_eq_card, Fintype.card_fin, Nat.not_ofNat_le_one]
 
 
 /-- **Question 8.**
@@ -165,6 +173,22 @@ A linear map that carries a basis to a linearly independent family is injective:
 `f (b₀), …, f (b_{n-1})` are linearly independent, then `f` is injective. -/
 theorem q8_indep_image_injective (f : V →ₗ[K] W)
     (hf : LinearIndependent K fun i => f (b i)) : Function.Injective f := by
-  sorry
+  unfold Function.Injective
+  intro v w hvw
+  have v_expand := (b.sum_repr v).symm
+  have w_expand := (b.sum_repr w).symm
+  have : f (v - w) = 0 := by sorry
+  have this_expand : f (∑ i, (b.repr v) i • b i - ∑ i, (b.repr w) i • b i) = 0 := by sorry
+  have h_sum : ∑ x, (b.repr (v - w)) x • f (b x) = 0 := by
+    calc ∑ x, (b.repr (v - w)) x • f (b x)
+      _ = f (∑ x, (b.repr (v - w)) x • b x) := by simp [map_sum, map_smul]
+      _ = f (v - w)                         := by rw [b.sum_repr]
+      _ = 0                                 := by trivial
+  have h_repr_zero : b.repr (v - w) = 0 := by sorry
+  have h_sub_zero : v - w = 0 := by sorry
+  apply_fun fun t ↦ t + w at h_sub_zero
+  simp at h_sub_zero
+  trivial
+
 
 end Exercises.LinearAlgebra.Basis
