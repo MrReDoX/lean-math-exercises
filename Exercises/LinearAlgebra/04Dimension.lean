@@ -60,7 +60,36 @@ If `U ≤ W` and `dim U = dim W` (finite dimension), then `U = W`.
 
 Prove without using `Submodule.eq_of_le_of_finrank_eq`. -/
 theorem q1_rigidity (h : U ≤ W) (hdim : finrank K U = finrank K W) : U = W := by
-  sorry
+  let f : U →ₗ[K] W := Submodule.inclusion h
+  have h_dim_quot : finrank K (W ⧸ LinearMap.range f) = 0 := by
+    have h_add := Submodule.finrank_quotient_add_finrank (LinearMap.range f)
+    rw [LinearMap.finrank_range_of_inj (Submodule.inclusion_injective h)] at h_add
+    omega
+  have h_subsingleton : Subsingleton (W ⧸ LinearMap.range f) :=
+    finrank_zero_iff.mp h_dim_quot
+  have h_top : LinearMap.range f = ⊤ := by
+    rw [eq_top_iff]
+    intro x _
+    have hzero : Submodule.Quotient.mk (p := LinearMap.range f) x = 0 :=
+      Subsingleton.elim _ _
+    exact (Submodule.Quotient.mk_eq_zero _).mp hzero
+
+  ext x
+  constructor
+  · intro a
+    simp_all only [f]
+    apply h
+    simp_all only
+  · intro hx
+    have hmem : (⟨x, hx⟩ : W) ∈ LinearMap.range f := by
+      rw [h_top]
+      trivial
+    rcases hmem with ⟨⟨u, hu⟩, hu_eq⟩
+    have huval : u = x := by
+      have := congrArg Subtype.val hu_eq
+      simpa [f, Submodule.inclusion] using this
+    rw [← huval]
+    trivial
 
 
 /-- **Question 2.**
