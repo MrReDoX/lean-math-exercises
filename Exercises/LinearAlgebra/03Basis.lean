@@ -142,7 +142,31 @@ The nonzero vector `(1,2)` extends to a basis of `ℝ²`: there is a basis of `�
 vector is `(1,2)`. -/
 theorem q5_extend_concrete :
     ∃ B : Basis (Fin 2) ℝ (Fin 2 → ℝ), B 0 = ![1, 2] := by
-  sorry
+  let v : Fin 2 → (Fin 2 → ℝ) := ![
+    ![1, 2],
+    ![0, 1]
+  ]
+
+  let B : Basis (Fin 2) ℝ (Fin 2 → ℝ) := Basis.mk (v := v) (by
+    unfold v
+    rw [@linearIndependent_fin2]
+    simp only [Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_fin_one, ne_eq,
+      Matrix.cons_eq_zero_iff, one_ne_zero, Matrix.zero_empty, and_true, and_false,
+      not_false_eq_true, Matrix.smul_cons, smul_eq_mul, mul_zero, mul_one, Matrix.smul_empty,
+      Matrix.cons_val_zero, Matrix.vecCons_inj, zero_ne_one, false_and, implies_true, and_self]
+  ) (by
+    simp_all only [Matrix.range_cons, Matrix.range_empty, Set.union_empty, Set.union_singleton, top_le_iff, v]
+    rw [@Submodule.eq_top_iff']
+    intro x
+    rw [@Submodule.mem_span_pair]
+    use x 1 - 2 * x 0, x 0
+    ext i
+    fin_cases i <;> simp; ring_nf
+  )
+
+  use B
+
+  simp_all only [Fin.isValue, Basis.coe_mk, Matrix.cons_val_zero, Nat.succ_eq_add_one, Nat.reduceAdd, B, v]
 
 
 /-- **Question 6.**
