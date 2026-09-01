@@ -2,7 +2,6 @@ import Mathlib.Tactic
 
 import Mathlib.Algebra.Module.Submodule.Lattice
 import Mathlib.Data.Real.Basic
-
 namespace Solutions.LinearAlgebra.Subspaces
 
 variable {K V : Type*} [Field K] [AddCommGroup V] [Module K V]

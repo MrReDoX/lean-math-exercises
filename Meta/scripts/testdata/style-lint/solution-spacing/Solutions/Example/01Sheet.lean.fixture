@@ -1,0 +1,12 @@
+namespace Solutions.Example.Sheet
+
+
+theorem q1 : True := by
+  trivial
+
+
+
+theorem q2 : True := by
+  trivial
+
+end Solutions.Example.Sheet

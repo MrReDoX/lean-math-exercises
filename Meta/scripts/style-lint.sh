@@ -62,12 +62,12 @@ done < <(find Exercises -type f -name '*.lean' -print0)
 while IFS= read -r -d '' file; do
   if ! awk '
     /^(private |noncomputable )?(theorem|def|structure|inductive) / {
-      if (previous != "" || previous2 != "") {
-        printf "%s:%d: top-level declarations need two blank lines before them\n", FILENAME, FNR
+      if (previous != "" || previous2 != "" || previous3 == "") {
+        printf "%s:%d: top-level declarations need exactly two empty lines before them\n", FILENAME, FNR
         bad = 1
       }
     }
-    { previous2 = previous; previous = $0 }
+    { previous3 = previous2; previous2 = previous; previous = $0 }
     END { exit bad }
   ' "$file"; then
     failed=1

@@ -6,16 +6,26 @@ import Mathlib.Algebra.CharP.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 import Mathlib.Algebra.Module.Basic
+import Mathlib.LinearAlgebra.Determinant
 
 /-!
-# Exercises — RingTheory / Rings, Domains & Fields
+# Exercises — RingTheory / Rings
 
-A commutative ring combines addition with a distributive multiplication. Units are the elements
-that can be divided by; zero divisors obstruct cancellation. Integral domains have no such
-obstruction, and the characteristic records the additive period of the multiplicative identity.
+A commutative ring `R` has an abelian group structure under addition and a commutative,
+associative multiplication with identity `1`, related by the distributive laws. The integers,
+residue rings, polynomial rings, and products of rings are examples. A ring homomorphism
+preserves `0`, `1`, addition, and multiplication.
 
-Prove each statement yourself; canonical proofs live in `Solutions/RingTheory/01Rings.lean`.
+An element `u` is a unit if there is `v` with `u * v = 1`. A zero divisor is a nonzero element
+`a` for which `a * b = 0` for some nonzero `b`; thus multiplication by `a` need not be injective.
+A domain has no zero divisors, so `a * b = a * c` and `a ≠ 0` imply `b = c`. A field is a domain
+in which every nonzero element is a unit. The characteristic of `R` is the least positive `n`
+with `n • 1 = 0`, if one exists, and is `0` otherwise.
+
+Prove each statement yourself; the canonical proofs will live in
+`Solutions/RingTheory/01Rings.lean`. Do **not** commit your proofs into this file.
 -/
+
 
 namespace Exercises.RingTheory.Rings
 
@@ -130,101 +140,177 @@ theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p
 
 /-- **Question 4.**
 
-The residue class of `5` is a unit modulo `12`. -/
-theorem q4_zmod12_unit : IsUnit (5 : ZMod 12) := by
+The coordinate-sum function `(m, n) ↦ m + n` from `ℤ × ℤ` to `ℤ` is not a
+non-unital ring homomorphism. -/
+theorem q4_coordinate_sum_not_nonunital_ring_hom :
+    ¬ ∃ f : ℤ × ℤ →ₙ+* ℤ, ∀ x : ℤ × ℤ, f x = x.1 + x.2 := by
   sorry
 
 
 /-- **Question 5.**
 
-The integers are initial among rings: every ring homomorphism from `ℤ` to `R`
-is the canonical integer-cast homomorphism. -/
-theorem q5_int_initial (f : ℤ →+* R) : f = Int.castRingHom R := by
+The determinant of a two-by-two real matrix is not additive. -/
+theorem q5_determinant_not_additive :
+    ∃ A B : Matrix (Fin 2) (Fin 2) ℝ, (A + B).det ≠ A.det + B.det := by
   sorry
 
 
 /-- **Question 6.**
 
-Every nonzero element of a finite integral domain is a unit.
-
-Prove without using `IsLeftRegular.isUnit_of_finite`. -/
-theorem q6_finite_domain_units [Finite R] [IsDomain R] {a : R} (ha : a ≠ 0) : IsUnit a := by
+A multiplicative-and-additive map from `ℤ` to itself is either zero or the identity. -/
+theorem q6_nonunital_ring_hom_int (f : ℤ →ₙ+* ℤ) :
+    f = 0 ∨ f = NonUnitalRingHom.id ℤ := by
   sorry
 
 
 /-- **Question 7.**
 
-Modulo `12`, the class of `2` is a nonzero zero divisor and therefore not a
-unit. -/
-theorem q7_zmod12_two_zero_divisor :
-    ¬ IsUnit (2 : ZMod 12) ∧ (2 : ZMod 12) * 6 = 0 ∧ (6 : ZMod 12) ≠ 0 := by
+Any two unital ring homomorphisms from `ℤ` to a fixed ring are equal.
+
+Prove without using `RingHom.ext_int`. -/
+theorem q7_unique_int_ring_hom (f g : ℤ →+* R) : f = g := by
   sorry
 
 
 /-- **Question 8.**
 
-A residue class modulo `12` is a unit exactly when one (equivalently, every)
-integer representative is coprime to `12`. -/
-theorem q8_zmod12_unit_iff (a : ZMod 12) :
-    IsUnit a ↔ ∃ n : ℕ, a = n ∧ n.Coprime 12 := by
+A homomorphism from a field is either zero or injective. -/
+theorem q8_field_hom_zero_or_injective {K L : Type*} [Field K] [Ring L]
+    (f : K →ₙ+* L) : f = 0 ∨ Function.Injective f := by
   sorry
 
 
 /-- **Question 9.**
 
-In a Boolean ring (one satisfying `x² = x` for every `x`), every element has
-additive order dividing two, and multiplication is commutative. -/
-theorem q9_boolean_two_torsion_and_comm {S : Type*} [Ring S]
-    (h : ∀ x : S, x * x = x) (a b : S) : a + a = 0 ∧ a * b = b * a := by
+A unital ring homomorphism maps units to units.
+
+Prove without using `IsUnit.map`. -/
+theorem q9_ring_hom_maps_units {S : Type*} [Ring S] (f : R →+* S)
+    {a : R} (ha : IsUnit a) : IsUnit (f a) := by
   sorry
 
 
 /-- **Question 10.**
 
-The Gaussian integers `ℤ[i]` have no zero divisors: if `zw = 0`, then
-`z = 0` or `w = 0`. -/
-theorem q10_gaussian_no_zero_divisors (z w : GaussianInt) (hzw : z * w = 0) : z = 0 ∨ w = 0 := by
+If `x² = 0`, then `1 + x` is a unit.
+
+Prove without using `IsNilpotent.isUnit_one_add` or `IsNilpotent.isUnit_add_one`. -/
+theorem q10_one_add_square_zero_is_unit (x : R) (hx : x ^ 2 = 0) : IsUnit (1 + x) := by
   sorry
 
 
 /-- **Question 11.**
 
-In the coordinate model of the real quaternions, every nonzero quaternion
-has a displayed two-sided inverse.  The basic units `i` and `j` also anticommute, so quaternion
-multiplication is not commutative. -/
-theorem q11_hamilton_inverse_and_noncommutative (q : Hamilton) (hq : q ≠ Hamilton.zero) :
-    (∃ r, Hamilton.mul q r = Hamilton.one ∧ Hamilton.mul r q = Hamilton.one) ∧
-      Hamilton.mul Hamilton.qi Hamilton.qj = Hamilton.neg (Hamilton.mul Hamilton.qj Hamilton.qi) := by
+If `u` is a unit and `x² = 0`, then `u + x` is a unit.
+
+Prove without using `IsNilpotent.isUnit_add_left_of_commute`. -/
+theorem q11_unit_add_square_zero_is_unit (u x : R) (hu : IsUnit u)
+    (hx : x ^ 2 = 0) : IsUnit (u + x) := by
   sorry
 
 
 /-- **Question 12.**
 
-An integer scalar action on an abelian group is forced to be repeated
-addition: any action additive in the integer variable and taking `1 • a = a` agrees with the
-usual integer multiple `n • a`. -/
-theorem q12_int_scalar_action_unique {A : Type*} [AddCommGroup A] (act : ℤ → A → A)
-    (hact : IsIntScalarAction act) (n : ℤ) (a : A) : act n a = n • a := by
+Multiplication by `a` is injective exactly when `a` is nonzero and has no nonzero element that it
+sends to zero. -/
+theorem q12_left_mul_injective_iff [Nontrivial R] (a : R) :
+    Function.Injective (fun b : R => a * b) ↔
+      a ≠ 0 ∧ ∀ b : R, a * b = 0 → b = 0 := by
   sorry
 
 
 /-- **Question 13.**
 
-For `n ≥ 2`, the residue ring `ℤ/nℤ` has no zero divisors exactly when
-`n` is prime. -/
-theorem q13_zmod_no_zero_divisors_iff_prime (n : ℕ) (hn : 2 ≤ n) :
-    n.Prime ↔ ∀ a b : ZMod n, a * b = 0 → a = 0 ∨ b = 0 := by
+Multiplication by `a` is surjective exactly when `a` is a unit. -/
+theorem q13_left_mul_surjective_iff (a : R) :
+    Function.Surjective (fun b : R => a * b) ↔ IsUnit a := by
   sorry
 
 
 /-- **Question 14.**
 
+In a finite commutative domain, multiplication by a nonzero element is surjective.
+
+Prove without using `IsLeftRegular.isUnit_of_finite`. -/
+theorem q14_finite_domain_mul_surjective [Fintype R] [IsDomain R] (a : R) (ha : a ≠ 0) :
+    Function.Surjective (fun b : R => a * b) := by
+  sorry
+
+
+/-- **Question 15.**
+
+In a domain, an idempotent is either zero or one.
+
+Prove without using `IsIdempotentElem.iff_eq_zero_or_one`. -/
+theorem q15_domain_idempotent [IsDomain R] (e : R) (he : e * e = e) : e = 0 ∨ e = 1 := by
+  sorry
+
+
+/-- **Question 16.**
+
+In a Boolean ring (one satisfying `x² = x` for every `x`), every element has
+additive order dividing two, and multiplication is commutative. -/
+theorem q16_boolean_two_torsion_and_comm {S : Type*} [Ring S]
+    (h : ∀ x : S, x * x = x) (a b : S) : a + a = 0 ∧ a * b = b * a := by
+  sorry
+
+
+/-- **Question 17.**
+
+The units of `ℤ/12ℤ` are exactly the residue classes of `1`, `5`, `7`, and `11`. -/
+theorem q17_units_zmod12 (a : ZMod 12) :
+    IsUnit a ↔ a = 1 ∨ a = 5 ∨ a = 7 ∨ a = 11 := by
+  sorry
+
+
+/-- **Question 18.**
+
+If a nontrivial commutative ring has zero divisors, cross-multiplication is not a transitive
+relation on numerator-denominator pairs. -/
+theorem q18_cross_multiplication_not_transitive [Nontrivial R] (hR : ¬ IsDomain R) :
+    ¬ IsTrans (R × R) (fun x y : R × R => x.1 * y.2 = x.2 * y.1) := by
+  sorry
+
+
+/-- **Question 19.**
+
+For `n ≥ 2`, the residue ring `ℤ/nℤ` has no zero divisors exactly when
+`n` is prime. -/
+theorem q19_zmod_no_zero_divisors_iff_prime (n : ℕ) (hn : 2 ≤ n) :
+    n.Prime ↔ ∀ a b : ZMod n, a * b = 0 → a = 0 ∨ b = 0 := by
+  sorry
+
+
+/-- **Question 20.**
+
+The Gaussian integers `ℤ[i]` have no zero divisors: if `zw = 0`, then
+`z = 0` or `w = 0`.
+
+Prove without using `Zsqrtd.eq_zero_or_eq_zero_of_mul_eq_zero`. -/
+theorem q20_gaussian_no_zero_divisors (z w : GaussianInt) (hzw : z * w = 0) : z = 0 ∨ w = 0 := by
+  sorry
+
+
+/-- **Question 21.**
+
 The only units of the Gaussian integers are `1`, `-1`, `i`, and `-i`.
 Here `i` and `-i` are represented by the coordinate pairs `⟨0, 1⟩` and `⟨0, -1⟩`.
 
 Prove without using `Zsqrtd.norm_eq_one_iff'`. -/
-theorem q14_gaussian_units_exactly_four (z : GaussianInt) :
+theorem q21_gaussian_units_exactly_four (z : GaussianInt) :
     IsUnit z ↔ z = 1 ∨ z = -1 ∨ z = ⟨0, 1⟩ ∨ z = ⟨0, -1⟩ := by
   sorry
+
+
+/-- **Question 22.**
+
+In the coordinate model of the real quaternions, every nonzero quaternion
+has a displayed two-sided inverse.  The basic units `i` and `j` also anticommute, so quaternion
+multiplication is not commutative. -/
+theorem q22_hamilton_inverse_and_noncommutative (q : Hamilton) (hq : q ≠ Hamilton.zero) :
+    (∃ r, Hamilton.mul q r = Hamilton.one ∧ Hamilton.mul r q = Hamilton.one) ∧
+      Hamilton.mul Hamilton.qi Hamilton.qj = Hamilton.neg (Hamilton.mul Hamilton.qj Hamilton.qi) := by
+  sorry
+
 
 end Exercises.RingTheory.Rings

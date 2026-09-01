@@ -6,6 +6,7 @@ import Mathlib.Algebra.CharP.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
 import Mathlib.Algebra.Module.Basic
+import Mathlib.LinearAlgebra.Determinant
 namespace Solutions.RingTheory.Rings
 
 variable {R : Type*} [CommRing R]
@@ -68,10 +69,8 @@ def IsIntScalarAction {A : Type*} [AddCommGroup A] (act : ℤ → A → A) : Pro
 open Hamilton
 
 
-
 theorem q1_neg_mul (a b : R) : (-a) * b = -(a * b) ∧ 0 * a = 0 := by
   exact ⟨neg_mul a b, zero_mul a⟩
-
 
 
 theorem q2_unit_not_zero_divisor {a b : R} (ha : IsUnit a) (hab : a * b = 0) : b = 0 := by
@@ -79,7 +78,6 @@ theorem q2_unit_not_zero_divisor {a b : R} (ha : IsUnit a) (hab : a * b = 0) : b
   -- Multiplying by the inverse of a unit cancels its nonzero factor.
   have h := congrArg (fun x : R => (↑(u⁻¹) : R) * x) hab
   simpa [mul_assoc] using h
-
 
 
 theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p = 0 := by
@@ -122,65 +120,157 @@ theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p
       omega
 
 
+theorem q4_coordinate_sum_not_nonunital_ring_hom :
+    ¬ ∃ f : ℤ × ℤ →ₙ+* ℤ, ∀ x : ℤ × ℤ, f x = x.1 + x.2 := by
+  rintro ⟨f, hf⟩
+  have hmul := f.map_mul (1, 0) (0, 1)
+  norm_num [hf] at hmul
 
-theorem q4_zmod12_unit : IsUnit (5 : ZMod 12) := by
-  -- The residue 5 is coprime to 12, so multiplication by it is reversible modulo 12.
-  exact ZMod.isUnit_iff_coprime 5 12 |>.mpr (by decide)
+
+theorem q5_determinant_not_additive :
+    ∃ A B : Matrix (Fin 2) (Fin 2) ℝ, (A + B).det ≠ A.det + B.det := by
+  let A : Matrix (Fin 2) (Fin 2) ℝ := 1
+  refine ⟨A, -A, ?_⟩
+  simp [A]
+  norm_num [Matrix.det_fin_two]
 
 
+theorem q6_nonunital_ring_hom_int (f : ℤ →ₙ+* ℤ) :
+    f = 0 ∨ f = NonUnitalRingHom.id ℤ := by
+  set f1 := f 1 with hf1
+  by_cases h : f1 = 0
+  · left
+    ext x
+    calc
+      f x = f (x * 1) := by simp
+      _ = f x * f 1 := f.map_mul x 1
+      _ = 0 := by rw [← hf1, h]; simp
+  · right
+    -- The image of `1` is idempotent; the only nonzero idempotent integer is `1`.
+    have hf1_one : f1 = 1 := by
+      by_contra hf1_ne_one
+      have hidem : f1 * f1 = f1 := by
+        simpa [hf1] using (f.map_mul 1 1).symm
+      exact hf1_ne_one (IsIdempotentElem.iff_eq_zero_or_one.mp hidem |>.resolve_left h)
+    ext n
+    calc
+      f n = f (n • (1 : ℤ)) := by simp
+      _ = n • f 1 := f.toAddMonoidHom.map_zsmul n 1
+      _ = n := by rw [← hf1, hf1_one]; simp
 
-theorem q5_int_initial (f : ℤ →+* R) : f = Int.castRingHom R := by
+
+theorem q7_unique_int_ring_hom (f g : ℤ →+* R) : f = g := by
   -- A ring map must preserve both `1` and repeated addition, so its value on every integer is fixed.
-  exact RingHom.ext_int f (Int.castRingHom R)
+  ext n
+  simp
 
 
+theorem q8_field_hom_zero_or_injective {K L : Type*} [Field K] [Ring L]
+    (f : K →ₙ+* L) : f = 0 ∨ Function.Injective f := by
+  set f1 := f 1 with hf1
+  by_cases h : f1 = 0
+  · left
+    ext x
+    calc
+      f x = f (1 * x) := by simp
+      _ = f 1 * f x := f.map_mul 1 x
+      _ = 0 := by rw [← hf1, h]; simp
+  · right
+    -- A nonzero field element has an inverse, so a nonzero element in the kernel would force
+    -- `f 1 = 0`.
+    intro a b hab
+    rw [← sub_eq_zero]
+    set x := a - b with hx
+    by_contra hne
+    apply h
+    rw [hf1]
+    calc
+      f 1 = f (x⁻¹ * x) := by rw [inv_mul_cancel₀ hne]
+      _ = f x⁻¹ * f x := f.map_mul x⁻¹ x
+      _ = 0 := by rw [show f x = 0 by simpa [hx] using sub_eq_zero.mpr hab, mul_zero]
 
-theorem q6_finite_domain_units [Finite R] [IsDomain R] {a : R} (ha : a ≠ 0) : IsUnit a := by
+
+theorem q9_ring_hom_maps_units {S : Type*} [Ring S] (f : R →+* S)
+    {a : R} (ha : IsUnit a) : IsUnit (f a) := by
+  rcases ha with ⟨u, rfl⟩
+  exact ⟨u.map f, rfl⟩
+
+
+theorem q10_one_add_square_zero_is_unit (x : R) (hx : x ^ 2 = 0) : IsUnit (1 + x) := by
+  -- The square-zero hypothesis makes `1 - x` a two-sided inverse of `1 + x`.
+  refine ⟨{ val := 1 + x, inv := 1 - x, val_inv := ?_, inv_val := ?_ }, rfl⟩ <;>
+    calc
+      _ = 1 - x ^ 2 := by ring
+      _ = 1 := by rw [hx]; ring
+
+
+theorem q11_unit_add_square_zero_is_unit (u x : R) (hu : IsUnit u)
+    (hx : x ^ 2 = 0) : IsUnit (u + x) := by
+  rcases hu with ⟨u, rfl⟩
+  have hsq : ((↑(u⁻¹) : R) * x) ^ 2 = 0 := by
+    rw [mul_pow]
+    simp [hx]
+  rw [show (↑u : R) + x = (↑u : R) * (1 + (↑(u⁻¹) : R) * x) by
+    rw [mul_add, mul_one, ← mul_assoc]
+    simp]
+  exact u.isUnit.mul (q10_one_add_square_zero_is_unit _ hsq)
+
+
+theorem q12_left_mul_injective_iff [Nontrivial R] (a : R) :
+    Function.Injective (fun b : R => a * b) ↔
+      a ≠ 0 ∧ ∀ b : R, a * b = 0 → b = 0 := by
+  constructor
+  · intro hinj
+    constructor
+    · intro ha
+      have hzero_one : (0 : R) = 1 := hinj (by simp [ha])
+      exact zero_ne_one hzero_one
+    · intro b hab
+      have hb : a * b = a * 0 := by simpa [hab]
+      exact hinj hb
+  · rintro ⟨ha, hkernel⟩ x y hxy
+    change a * x = a * y at hxy
+    apply sub_eq_zero.mp
+    apply hkernel
+    rw [mul_sub, hxy, sub_self]
+
+
+theorem q13_left_mul_surjective_iff (a : R) :
+    Function.Surjective (fun b : R => a * b) ↔ IsUnit a := by
+  constructor
+  · intro h
+    -- A preimage of `1` supplies an inverse for `a`.
+    obtain ⟨b, hb⟩ := h 1
+    exact ⟨{ val := a, inv := b, val_inv := hb, inv_val := by simpa [mul_comm] using hb }, rfl⟩
+  · rintro ⟨u, rfl⟩ b
+    refine ⟨(↑(u⁻¹) : R) * b, ?_⟩
+    change (↑u : R) * ((↑(u⁻¹) : R) * b) = b
+    rw [← mul_assoc]
+    simp
+
+
+theorem q14_finite_domain_mul_surjective [Fintype R] [IsDomain R] (a : R) (ha : a ≠ 0) :
+    Function.Surjective (fun b : R => a * b) := by
   -- Multiplication by `a` is injective: equal products differ by a product `a(x-y)` equal to zero.
-  -- On a finite set it is therefore surjective, so some `b` satisfies `ab = 1`.
-  rw [isUnit_iff_exists]
+  -- A self-map of a finite set is surjective once it is injective.
   have hinj : Function.Injective (fun x : R => a * x) := by
     intro x y hxy
     change a * x = a * y at hxy
     apply sub_eq_zero.mp
     apply (mul_eq_zero.mp ?_).resolve_left ha
     rw [mul_sub, hxy, sub_self]
-  obtain ⟨b, hb⟩ := Finite.surjective_of_injective hinj 1
-  change a * b = 1 at hb
-  refine ⟨b, hb, ?_⟩
-  rw [mul_comm, hb]
+  exact Finite.surjective_of_injective hinj
 
 
-
-theorem q7_zmod12_two_zero_divisor :
-    ¬ IsUnit (2 : ZMod 12) ∧ (2 : ZMod 12) * 6 = 0 ∧ (6 : ZMod 12) ≠ 0 := by
-  constructor
-  · -- A common factor with the modulus prevents a residue from being invertible.
-    change ¬ IsUnit ((2 : ℕ) : ZMod 12)
-    rw [ZMod.isUnit_iff_coprime]
-    norm_num
-  constructor
-  · change ((12 : ℕ) : ZMod 12) = 0
-    rw [ZMod.natCast_eq_zero_iff]
-  · change ((6 : ℕ) : ZMod 12) ≠ 0
-    intro h
-    have hdiv : 12 ∣ 6 := (ZMod.natCast_eq_zero_iff 6 12).mp h
-    norm_num at hdiv
+theorem q15_domain_idempotent [IsDomain R] (e : R) (he : e * e = e) : e = 0 ∨ e = 1 := by
+  have hprod : e * (e - 1) = 0 := by
+    rw [mul_sub, he, mul_one, sub_self]
+  rcases mul_eq_zero.mp hprod with he0 | he1
+  · exact Or.inl he0
+  · exact Or.inr (sub_eq_zero.mp he1)
 
 
-
-theorem q8_zmod12_unit_iff (a : ZMod 12) :
-    IsUnit a ↔ ∃ n : ℕ, a = n ∧ n.Coprime 12 := by
-  constructor
-  · intro ha
-    obtain ⟨n, rfl⟩ := ZMod.natCast_zmod_surjective a
-    exact ⟨n, rfl, ZMod.isUnit_iff_coprime n 12 |>.mp ha⟩
-  · rintro ⟨n, rfl, hn⟩
-    exact ZMod.isUnit_iff_coprime n 12 |>.mpr hn
-
-
-
-theorem q9_boolean_two_torsion_and_comm {S : Type*} [Ring S]
+theorem q16_boolean_two_torsion_and_comm {S : Type*} [Ring S]
     (h : ∀ x : S, x * x = x) (a b : S) : a + a = 0 ∧ a * b = b * a := by
   -- First expand `(x+x)² = x+x`: it leaves `2x = 0` for every `x`.
   have htwo (x : S) : x + x = 0 := by
@@ -212,82 +302,19 @@ theorem q9_boolean_two_torsion_and_comm {S : Type*} [Ring S]
       _ = b * a := by rw [hcross, zero_add]
 
 
-
-theorem q10_gaussian_no_zero_divisors (z w : GaussianInt) (hzw : z * w = 0) : z = 0 ∨ w = 0 := by
-  -- Norms multiply.  Since an integer product is zero only when one factor is zero, one of the
-  -- two Gaussian norms vanishes, and hence one of the two Gaussian integers vanishes.
-  have hnorm : z.norm * w.norm = 0 := by
-    rw [← Zsqrtd.norm_mul, hzw]
-    rfl
-  exact (Int.mul_eq_zero.mp hnorm).imp GaussianInt.norm_eq_zero.mp GaussianInt.norm_eq_zero.mp
+theorem q17_units_zmod12 (a : ZMod 12) :
+    IsUnit a ↔ a = 1 ∨ a = 5 ∨ a = 7 ∨ a = 11 := by
+  have hval : (a.val : ZMod 12) = a := ZMod.natCast_zmod_val a
+  rw [← hval, ZMod.isUnit_iff_coprime]
+  have hlt : a.val < 12 := a.val_lt
+  interval_cases h : a.val <;> norm_num [h] <;> decide
 
 
-
-private theorem hamilton_normSq_ne_zero (q : Hamilton) (hq : q ≠ zero) : normSq q ≠ 0 := by
-  rintro h
-  rcases q with ⟨a, b, c, d⟩
-  dsimp [normSq] at h
-  have ha2 : a ^ 2 = 0 := by nlinarith [sq_nonneg b, sq_nonneg c, sq_nonneg d]
-  have hb2 : b ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg c, sq_nonneg d]
-  have hc2 : c ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg d]
-  have hd2 : d ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg c]
-  have ha : a = 0 := sq_eq_zero_iff.mp ha2
-  have hb : b = 0 := sq_eq_zero_iff.mp hb2
-  have hc : c = 0 := sq_eq_zero_iff.mp hc2
-  have hd : d = 0 := sq_eq_zero_iff.mp hd2
-  apply hq
-  simp [zero, ha, hb, hc, hd]
-
-
-
-private theorem hamilton_mul_inv (q : Hamilton) (hq : q ≠ zero) : mul q (inv q) = one := by
-  rcases q with ⟨a, b, c, d⟩
-  have hnorm : a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 ≠ 0 := by
-    simpa [normSq] using hamilton_normSq_ne_zero ⟨a, b, c, d⟩ hq
-  ext <;> dsimp [mul, inv, scale, conj, normSq, one, zero] at *
-  all_goals
-    field_simp [hnorm]
-    ring
-
-
-
-private theorem hamilton_inv_mul (q : Hamilton) (hq : q ≠ zero) : mul (inv q) q = one := by
-  rcases q with ⟨a, b, c, d⟩
-  have hnorm : a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 ≠ 0 := by
-    simpa [normSq] using hamilton_normSq_ne_zero ⟨a, b, c, d⟩ hq
-  ext <;> dsimp [mul, inv, scale, conj, normSq, one, zero] at *
-  all_goals
-    field_simp [hnorm]
-    ring
-
-
-
-theorem q11_hamilton_inverse_and_noncommutative (q : Hamilton) (hq : q ≠ zero) :
-    (∃ r, mul q r = one ∧ mul r q = one) ∧ mul qi qj = neg (mul qj qi) := by
-  -- Conjugation reverses the imaginary coordinates, and division by the positive squared norm
-  -- makes it a two-sided inverse.  The coordinate multiplication also gives `ij = -ji`.
-  refine ⟨⟨inv q, hamilton_mul_inv q hq, hamilton_inv_mul q hq⟩, ?_⟩
-  simp [mul, qi, qj, neg]
-
-
-
-theorem q12_int_scalar_action_unique {A : Type*} [AddCommGroup A] (act : ℤ → A → A)
-    (hact : IsIntScalarAction act) (n : ℤ) (a : A) : act n a = n • a := by
-  -- Starting at zero, add one to reach positive integers and subtract one to reach negative
-  -- integers.  Additivity forces exactly the usual repeated-addition rule in both directions.
-  rcases hact with ⟨hzero, hone, hadd⟩
-  induction n using Int.induction_on with
-  | zero => simpa using hzero a
-  | succ n ih =>
-      rw [show (n + 1 : ℤ) = n + 1 by omega, hadd, ih, hone]
-      simp [add_zsmul]
-  | pred n ih =>
-      have hsum := hadd (-↑n - 1) 1 a
-      rw [show (-↑n - 1 : ℤ) + 1 = -↑n by omega, ih, hone] at hsum
-      calc
-        act (-↑n - 1) a = (-↑n : ℤ) • a - a := eq_sub_iff_add_eq.mpr hsum.symm
-        _ = (-↑n - 1 : ℤ) • a := by rw [sub_eq_add_neg, sub_zsmul]; simp
-
+theorem q18_cross_multiplication_not_transitive [Nontrivial R] (hR : ¬ IsDomain R) :
+    ¬ IsTrans (R × R) (fun x y : R × R => x.1 * y.2 = x.2 * y.1) := by
+  intro h
+  have hbad := h.trans (1, 0) (0, 0) (0, 1) (by simp) (by simp)
+  simp at hbad
 
 
 private theorem zmod_prime_iff_cast_no_zero_divisors (n : ℕ) (hn : 2 ≤ n) :
@@ -334,8 +361,7 @@ private theorem zmod_prime_iff_cast_no_zero_divisors (n : ℕ) (hn : 2 ≤ n) :
       omega
 
 
-
-theorem q13_zmod_no_zero_divisors_iff_prime (n : ℕ) (hn : 2 ≤ n) :
+theorem q19_zmod_no_zero_divisors_iff_prime (n : ℕ) (hn : 2 ≤ n) :
     n.Prime ↔ ∀ a b : ZMod n, a * b = 0 → a = 0 ∨ b = 0 := by
   constructor
   · intro hp a b hab
@@ -351,8 +377,16 @@ theorem q13_zmod_no_zero_divisors_iff_prime (n : ℕ) (hn : 2 ≤ n) :
     exact h a b hab
 
 
+theorem q20_gaussian_no_zero_divisors (z w : GaussianInt) (hzw : z * w = 0) : z = 0 ∨ w = 0 := by
+  -- Norms multiply.  Since an integer product is zero only when one factor is zero, one of the
+  -- two Gaussian norms vanishes, and hence one of the two Gaussian integers vanishes.
+  have hnorm : z.norm * w.norm = 0 := by
+    rw [← Zsqrtd.norm_mul, hzw]
+    rfl
+  exact (Int.mul_eq_zero.mp hnorm).imp GaussianInt.norm_eq_zero.mp GaussianInt.norm_eq_zero.mp
 
-theorem q14_gaussian_units_exactly_four (z : GaussianInt) :
+
+theorem q21_gaussian_units_exactly_four (z : GaussianInt) :
     IsUnit z ↔ z = 1 ∨ z = -1 ∨ z = ⟨0, 1⟩ ∨ z = ⟨0, -1⟩ := by
   constructor
   · intro hz
@@ -382,5 +416,49 @@ theorem q14_gaussian_units_exactly_four (z : GaussianInt) :
     · exact ⟨-1, by ring, by ring⟩
     · exact ⟨⟨0, -1⟩, by ext <;> norm_num, by ext <;> norm_num⟩
     · exact ⟨⟨0, 1⟩, by ext <;> norm_num, by ext <;> norm_num⟩
+
+
+private theorem hamilton_normSq_ne_zero (q : Hamilton) (hq : q ≠ zero) : normSq q ≠ 0 := by
+  rintro h
+  rcases q with ⟨a, b, c, d⟩
+  dsimp [normSq] at h
+  have ha2 : a ^ 2 = 0 := by nlinarith [sq_nonneg b, sq_nonneg c, sq_nonneg d]
+  have hb2 : b ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg c, sq_nonneg d]
+  have hc2 : c ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg d]
+  have hd2 : d ^ 2 = 0 := by nlinarith [sq_nonneg a, sq_nonneg b, sq_nonneg c]
+  have ha : a = 0 := sq_eq_zero_iff.mp ha2
+  have hb : b = 0 := sq_eq_zero_iff.mp hb2
+  have hc : c = 0 := sq_eq_zero_iff.mp hc2
+  have hd : d = 0 := sq_eq_zero_iff.mp hd2
+  apply hq
+  simp [zero, ha, hb, hc, hd]
+
+
+private theorem hamilton_mul_inv (q : Hamilton) (hq : q ≠ zero) : mul q (inv q) = one := by
+  rcases q with ⟨a, b, c, d⟩
+  have hnorm : a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 ≠ 0 := by
+    simpa [normSq] using hamilton_normSq_ne_zero ⟨a, b, c, d⟩ hq
+  ext <;> dsimp [mul, inv, scale, conj, normSq, one, zero] at *
+  all_goals
+    field_simp [hnorm]
+    ring
+
+
+private theorem hamilton_inv_mul (q : Hamilton) (hq : q ≠ zero) : mul (inv q) q = one := by
+  rcases q with ⟨a, b, c, d⟩
+  have hnorm : a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 ≠ 0 := by
+    simpa [normSq] using hamilton_normSq_ne_zero ⟨a, b, c, d⟩ hq
+  ext <;> dsimp [mul, inv, scale, conj, normSq, one, zero] at *
+  all_goals
+    field_simp [hnorm]
+    ring
+
+
+theorem q22_hamilton_inverse_and_noncommutative (q : Hamilton) (hq : q ≠ zero) :
+    (∃ r, mul q r = one ∧ mul r q = one) ∧ mul qi qj = neg (mul qj qi) := by
+  -- Conjugation reverses the imaginary coordinates, and division by the positive squared norm
+  -- makes it a two-sided inverse.  The coordinate multiplication also gives `ij = -ji`.
+  refine ⟨⟨inv q, hamilton_mul_inv q hq, hamilton_inv_mul q hq⟩, ?_⟩
+  simp [mul, qi, qj, neg]
 
 end Solutions.RingTheory.Rings

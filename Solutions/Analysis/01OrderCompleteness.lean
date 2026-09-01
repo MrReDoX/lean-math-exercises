@@ -4,7 +4,6 @@ import Mathlib.Algebra.Order.Archimedean.Basic
 import Mathlib.Algebra.Order.Floor.Ring
 import Mathlib.Order.ConditionallyCompleteLattice.Indexed
 import Mathlib.Topology.Instances.Real.Lemmas
-
 namespace Solutions.Analysis.OrderCompleteness
 
 open Filter Set
