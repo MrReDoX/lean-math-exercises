@@ -1,6 +1,6 @@
 # lean-math-exercises
 
-This repository collects mathematical exercises grouped by area, loosely following Mathlib's structure. The author created it with the hope of making mathematics more open and accessible to everyone — practice and feedback are indispensable parts of learning. We hope it benefits both students learning mathematics and people familiar with mathematics who are learning Lean.
+This repository collects mathematical exercises in Lean grouped by area, loosely following Mathlib's structure. The author created it with the hope of making mathematics more open and accessible to everyone — practice and feedback are indispensable parts of learning. We hope it benefits both students learning mathematics and people familiar with mathematics who are learning Lean.
 
 - Currently covered topics: parts of the standard undergraduate curriculum in linear algebra, abstract algebra, topology, and real analysis.
 - Planned topics: commutative algebra, category theory/arrow chasing in Lean, etc.
