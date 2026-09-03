@@ -97,7 +97,10 @@ theorem q1_rigidity (h : U ≤ W) (hdim : finrank K U = finrank K W) : U = W := 
 A subspace has the full dimension of the space iff it is the whole space:
 `dim U = dim V ↔ U = ⊤`. -/
 theorem q2_eq_top_iff : finrank K U = finrank K V ↔ U = ⊤ := by
-  sorry
+  constructor <;> intro h
+  · exact Submodule.eq_top_of_finrank_eq h
+  · subst h
+    simp_all only [finrank_top]
 
 
 /-- **Question 3.**
@@ -125,6 +128,24 @@ omit [FiniteDimensional K V] in
 The line spanned by a nonzero vector has dimension `1`. -/
 theorem q5_finrank_span_singleton (v : V) (hv : v ≠ 0) :
     finrank K (Submodule.span K {v}) = 1 := by
-  sorry
+  let b : Basis (Fin 1) K ↥(K ∙ v) := Basis.mk
+    (v := fun w ↦ ⟨v, by
+      exact Submodule.mem_span_singleton_self v
+    ⟩)
+    (by
+      simp_all only [ne_eq, linearIndependent_subsingleton_index_iff, Submodule.mk_eq_zero, not_false_eq_true,
+        implies_true]
+    )
+    (by
+      simp only [Set.range_const, top_le_iff]
+      rw [Submodule.span_singleton_eq_top_iff]
+      intro w
+      obtain ⟨r, hr⟩ := (Submodule.mem_span_singleton).mp w.2
+      exact ⟨r, Subtype.ext hr⟩
+    )
+
+  -- exact finrank_span_singleton hv
+  have crucial := Module.finrank_eq_card_basis b
+  simp_all only [Fintype.card_unique]
 
 end Exercises.LinearAlgebra.Dimension
