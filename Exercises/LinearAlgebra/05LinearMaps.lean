@@ -56,7 +56,15 @@ The solution set of `f x = w` is a coset of the kernel: if `f x₀ = w`, then `f
 `x - x₀ ∈ ker f`. -/
 theorem q1_fiber_coset (f : V →ₗ[K] W) (x₀ : V) (w : W) (h : f x₀ = w) (x : V) :
     f x = w ↔ x - x₀ ∈ ker f := by
-  sorry
+  constructor <;> intro h
+  · rw [@sub_mem_ker_iff]
+    rename_i h_1
+    subst h_1
+    simp_all only
+  · rw [sub_mem_ker_iff] at h
+    rename_i h_1
+    subst h_1
+    simp_all only
 
 
 /-- **Question 2.**
@@ -66,7 +74,28 @@ A linear map is injective iff its kernel is trivial: `Injective f ↔ ker f = �
 Prove without using `LinearMap.ker_eq_bot`. -/
 theorem q2_injective_iff_ker (f : V →ₗ[K] W) :
     Function.Injective f ↔ ker f = ⊥ := by
-  sorry
+  constructor <;> intro h
+  · rw [@ker_eq_bot']
+    intro m hm
+    simp_all only [LinearMap.map_eq_zero_iff]
+  · unfold Function.Injective
+    intro v w hvw
+    have : f (v - w) = 0 := by
+      simp only [map_sub]
+      apply_fun (· + f w)
+      simp only [sub_add_cancel, zero_add]
+      rw [hvw]
+      unfold Function.Injective
+      intro v₁ v₂ hv1v2
+      simp_all only [add_left_inj]
+    --  done
+    rw [@ker_eq_bot'] at h
+    specialize h (v - w) this
+    apply_fun (· - w)
+    simp only [sub_self]
+    trivial
+    unfold Function.Injective
+    simp only [sub_left_inj, imp_self, implies_true]
 
 
 /-- **Question 3.**
@@ -76,7 +105,19 @@ A linear map is surjective iff its range is the whole codomain: `Surjective f �
 Prove without using `LinearMap.range_eq_top`. -/
 theorem q3_surjective_iff_range (f : V →ₗ[K] W) :
     Function.Surjective f ↔ range f = ⊤ := by
-  sorry
+  constructor <;> intro h
+  · rw [@Submodule.eq_top_iff']
+    intro w
+    rw [@mem_range]
+    unfold Function.Surjective at h
+    specialize h w
+    simp_all only
+  · unfold Function.Surjective
+    intro b
+    rw [Submodule.eq_top_iff'] at h
+    specialize h b
+    rw [@mem_range] at h
+    simp_all only
 
 
 /-- **Question 4.**
