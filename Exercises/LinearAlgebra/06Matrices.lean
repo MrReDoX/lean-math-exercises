@@ -56,13 +56,15 @@ section
 end
 
 
+#eval (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℤ) * !![5, 6; 7, 8]
 /-- **Question 1.**
 
 Compute the product of the `2 × 2` matrices
 `[[1, 2], [3, 4]]` and `[[5, 6], [7, 8]]`. -/
 theorem q1_matmul_concrete :
     (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ) * !![5, 6; 7, 8] = !![19, 22; 43, 50] := by
-  sorry
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp <;> ring_nf
 
 
 /-- **Question 2.**
@@ -72,7 +74,14 @@ Matrix multiplication is not commutative: for `A = !![1,1;0,1]` and `B = !![1,0;
 theorem q2_noncommute :
     (!![1, 1; 0, 1] : Matrix (Fin 2) (Fin 2) ℝ) * !![1, 0; 1, 1]
       ≠ !![1, 0; 1, 1] * !![1, 1; 0, 1] := by
-  sorry
+  intro h
+  rw [← Matrix.ext_iff] at h
+  specialize h 0 0
+  simp only [Fin.isValue, Matrix.cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.vecMul_cons,
+    Matrix.head_cons, one_smul, Matrix.tail_cons, Matrix.empty_vecMul, add_zero, Matrix.add_cons,
+    zero_add, Matrix.empty_add_empty, zero_smul, Matrix.empty_mul, Equiv.symm_apply_apply,
+    Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_fin_one, add_eq_left,
+    one_ne_zero] at h
 
 
 /-- **Question 3.**
