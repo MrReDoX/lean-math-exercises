@@ -129,7 +129,13 @@ for `f : V →ₗ[K] V`, `Injective f ↔ Surjective f`.
 Prove without using `LinearMap.injective_iff_surjective`. -/
 theorem q4_inj_iff_surj [FiniteDimensional K V] (f : V →ₗ[K] V) :
     Function.Injective f ↔ Function.Surjective f := by
-  sorry
+  constructor <;> intro h
+  · rw [q2_injective_iff_ker] at h
+    rw [q3_surjective_iff_range]
+    exact ker_eq_bot_iff_range_eq_top.mp h
+  · rw [q2_injective_iff_ker]
+    rw [q3_surjective_iff_range] at h
+    exact ker_eq_bot_iff_range_eq_top.mpr h
 
 
 /-- **Question 5.**
@@ -176,7 +182,21 @@ The projection `p (x, y) = (x, 0)` on `ℝ²` is idempotent (`p ∘ p = p`) but 
 nor surjective. -/
 theorem q7_projection :
     proj₁ ∘ₗ proj₁ = proj₁ ∧ ¬ Function.Injective proj₁ ∧ ¬ Function.Surjective proj₁ := by
-  sorry
+  refine ⟨?_, ?_, ?_⟩
+  · ext v
+    simp only [coe_comp, coe_single, Function.comp_apply, proj₁_apply, Nat.succ_eq_add_one,
+      Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero]
+  · intro h
+    unfold Function.Injective at h
+    specialize h (a₁ := ![0, 1]) (a₂ := ![0, 0])
+    simp_all only [proj₁_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.vecCons_inj, one_ne_zero, and_true, and_false, imp_false, not_true_eq_false]
+  · intro h
+    unfold Function.Surjective at h
+    simp_all only [proj₁_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
+    specialize h ![0, 1]
+    choose a ha using h
+    simp_all only [Fin.isValue, Matrix.vecCons_inj, zero_ne_one, and_true, and_false]
 
 
 /-- **Question 8.**
@@ -184,7 +204,19 @@ theorem q7_projection :
 The projection `g (x, y, z) = (x, y)` from `ℝ³` to `ℝ²` is surjective but not injective. -/
 theorem q8_project_surj_not_inj :
     Function.Surjective proj₃₂ ∧ ¬ Function.Injective proj₃₂ := by
-  sorry
+  constructor
+  · unfold Function.Surjective
+    intro b
+    use ![b 0, b 1, 0]
+    simp only [Fin.isValue, proj₃₂_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.cons_val_zero,
+      Matrix.cons_val_one]
+    ext i
+    fin_cases i <;> simp
+  · intro h
+    unfold Function.Injective at h
+    specialize h (a₁ := ![0, 0, 1]) (a₂ := ![0, 0, 2])
+    simp_all only [proj₃₂_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.vecCons_inj, OfNat.one_ne_ofNat, and_true, and_false, imp_false, not_true_eq_false]
 
 
 /-- **Question 9.**
