@@ -119,34 +119,15 @@ end
 Negation distributes across multiplication on the left, and zero annihilates
 multiplication. -/
 theorem q1_neg_mul (a b : R) : (-a) * b = -(a * b) ∧ 0 * a = 0 := by
-  constructor
-  · simp only [neg_mul]
-  · simp only [zero_mul]
-  constructor
-  · simp only [neg_mul]
-  · simp only [zero_mul]
+  sorry
 
 
 /-- **Question 2.**
 
 A unit cannot be a zero divisor: if `a` is a unit and `a*b = 0`, then `b = 0`. -/
 theorem q2_unit_not_zero_divisor {a b : R} (ha : IsUnit a) (hab : a * b = 0) : b = 0 := by
-  rw [isUnit_iff_exists] at ha
-  obtain ⟨w, h⟩ := ha
-  obtain ⟨left, right⟩ := h
-  apply_fun (w * ·) at hab
-  ring_nf at hab
-  rw [right] at hab
-  simp at hab
-  trivial
-  rw [isUnit_iff_exists] at ha
-  obtain ⟨w, h⟩ := ha
-  obtain ⟨left, right⟩ := h
-  apply_fun (w * ·) at hab
-  ring_nf at hab
-  rw [right] at hab
-  simp at hab
-  trivial
+  sorry
+
 
 /-- **Question 3.**
 

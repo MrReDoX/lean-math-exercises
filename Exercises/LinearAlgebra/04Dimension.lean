@@ -60,36 +60,7 @@ If `U ≤ W` and `dim U = dim W` (finite dimension), then `U = W`.
 
 Prove without using `Submodule.eq_of_le_of_finrank_eq`. -/
 theorem q1_rigidity (h : U ≤ W) (hdim : finrank K U = finrank K W) : U = W := by
-  let f : U →ₗ[K] W := Submodule.inclusion h
-  have h_dim_quot : finrank K (W ⧸ LinearMap.range f) = 0 := by
-    have h_add := Submodule.finrank_quotient_add_finrank (LinearMap.range f)
-    rw [LinearMap.finrank_range_of_inj (Submodule.inclusion_injective h)] at h_add
-    omega
-  have h_subsingleton : Subsingleton (W ⧸ LinearMap.range f) :=
-    finrank_zero_iff.mp h_dim_quot
-  have h_top : LinearMap.range f = ⊤ := by
-    rw [eq_top_iff]
-    intro x _
-    have hzero : Submodule.Quotient.mk (p := LinearMap.range f) x = 0 :=
-      Subsingleton.elim _ _
-    exact (Submodule.Quotient.mk_eq_zero _).mp hzero
-
-  ext x
-  constructor
-  · intro a
-    simp_all only [f]
-    apply h
-    simp_all only
-  · intro hx
-    have hmem : (⟨x, hx⟩ : W) ∈ LinearMap.range f := by
-      rw [h_top]
-      trivial
-    rcases hmem with ⟨⟨u, hu⟩, hu_eq⟩
-    have huval : u = x := by
-      have := congrArg Subtype.val hu_eq
-      simpa [f, Submodule.inclusion] using this
-    rw [← huval]
-    trivial
+  sorry
 
 
 /-- **Question 2.**
@@ -97,10 +68,7 @@ theorem q1_rigidity (h : U ≤ W) (hdim : finrank K U = finrank K W) : U = W := 
 A subspace has the full dimension of the space iff it is the whole space:
 `dim U = dim V ↔ U = ⊤`. -/
 theorem q2_eq_top_iff : finrank K U = finrank K V ↔ U = ⊤ := by
-  constructor <;> intro h
-  · exact Submodule.eq_top_of_finrank_eq h
-  · subst h
-    simp_all only [finrank_top]
+  sorry
 
 
 /-- **Question 3.**
@@ -128,24 +96,6 @@ omit [FiniteDimensional K V] in
 The line spanned by a nonzero vector has dimension `1`. -/
 theorem q5_finrank_span_singleton (v : V) (hv : v ≠ 0) :
     finrank K (Submodule.span K {v}) = 1 := by
-  let b : Basis (Fin 1) K ↥(K ∙ v) := Basis.mk
-    (v := fun w ↦ ⟨v, by
-      exact Submodule.mem_span_singleton_self v
-    ⟩)
-    (by
-      simp_all only [ne_eq, linearIndependent_subsingleton_index_iff, Submodule.mk_eq_zero, not_false_eq_true,
-        implies_true]
-    )
-    (by
-      simp only [Set.range_const, top_le_iff]
-      rw [Submodule.span_singleton_eq_top_iff]
-      intro w
-      obtain ⟨r, hr⟩ := (Submodule.mem_span_singleton).mp w.2
-      exact ⟨r, Subtype.ext hr⟩
-    )
-
-  -- exact finrank_span_singleton hv
-  have crucial := Module.finrank_eq_card_basis b
-  simp_all only [Fintype.card_unique]
+  sorry
 
 end Exercises.LinearAlgebra.Dimension

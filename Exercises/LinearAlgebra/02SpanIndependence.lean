@@ -65,11 +65,7 @@ end
 Show that `(2,5)` belongs to the span of `(1,0)` and `(0,1)` in `ℝ²`. -/
 theorem q1_mem_span_explicit : (![2, 5] : Fin 2 → ℝ) ∈
     Submodule.span ℝ {(![1, 0] : Fin 2 → ℝ), ![0, 1]} := by
-  rw [@Submodule.mem_span_pair]
-  use 2, 5
-  simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.smul_cons, smul_eq_mul, mul_one, mul_zero,
-    Matrix.smul_empty, Matrix.add_cons, Matrix.head_cons, add_zero, Matrix.tail_cons, zero_add,
-    Matrix.empty_add_empty]
+  sorry
 
 
 /-- **Question 2.**
@@ -150,7 +146,6 @@ Here `X` is the polynomial indeterminate, so the family is indexed by the expone
 Prove without using `Polynomial.basisMonomials`. -/
 theorem q9_polynomials_independent {n : ℕ} : LinearIndependent K
     (fun i : Fin (n + 1) => (Polynomial.X : Polynomial K) ^ i.val) := by
-  rw [@linearIndependent_finSucc']
   sorry
 
 end Exercises.LinearAlgebra.SpanIndependence

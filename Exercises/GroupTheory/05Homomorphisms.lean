@@ -53,9 +53,7 @@ end
 A homomorphism sends inverses to inverses. Show that `f a⁻¹` is an inverse of `f a`, then use
 uniqueness of inverses. -/
 theorem q1_map_inv (f : G →* H) (a : G) : f a⁻¹ = (f a)⁻¹ := by
-  rw [eq_inv_iff_mul_eq_one, ← @MonoidHom.map_mul]
-  group
-  rw [@MonoidHom.map_one]
+  sorry
 
 
 /-- **Question 2.**

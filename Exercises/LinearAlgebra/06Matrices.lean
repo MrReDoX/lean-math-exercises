@@ -57,15 +57,13 @@ section
 end
 
 
-#eval (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℤ) * !![5, 6; 7, 8]
 /-- **Question 1.**
 
 Compute the product of the `2 × 2` matrices
 `[[1, 2], [3, 4]]` and `[[5, 6], [7, 8]]`. -/
 theorem q1_matmul_concrete :
     (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ) * !![5, 6; 7, 8] = !![19, 22; 43, 50] := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp <;> ring_nf
+  sorry
 
 
 /-- **Question 2.**
@@ -75,14 +73,7 @@ Matrix multiplication is not commutative: for `A = !![1,1;0,1]` and `B = !![1,0;
 theorem q2_noncommute :
     (!![1, 1; 0, 1] : Matrix (Fin 2) (Fin 2) ℝ) * !![1, 0; 1, 1]
       ≠ !![1, 0; 1, 1] * !![1, 1; 0, 1] := by
-  intro h
-  rw [← Matrix.ext_iff] at h
-  specialize h 0 0
-  simp only [Fin.isValue, Matrix.cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.vecMul_cons,
-    Matrix.head_cons, one_smul, Matrix.tail_cons, Matrix.empty_vecMul, add_zero, Matrix.add_cons,
-    zero_add, Matrix.empty_add_empty, zero_smul, Matrix.empty_mul, Equiv.symm_apply_apply,
-    Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero, Matrix.cons_val_fin_one, add_eq_left,
-    one_ne_zero] at h
+  sorry
 
 
 /-- **Question 3.**
@@ -92,7 +83,7 @@ The matrix `!![0,-1;1,0]` acts as the `90°` rotation of `ℝ²`: it sends `(1,0
 theorem q3_rotation_action :
     Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℝ) ![1, 0] = ![0, 1] ∧
     Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℝ) ![0, 1] = ![-1, 0] := by
-  constructor <;> ext i <;> fin_cases i <;> simp
+  sorry
 
 
 /-- **Question 4.**
@@ -122,8 +113,7 @@ Verify that `!![2,1;1,1]` is invertible with inverse `!![1,-1;-1,2]`, by checkin
 is the identity. -/
 theorem q6_inverse_concrete :
     (!![2, 1; 1, 1] : Matrix (Fin 2) (Fin 2) ℝ) * !![1, -1; -1, 2] = 1 := by
-  ext i j
-  fin_cases i <;> fin_cases j <;> simp <;> ring_nf
+  sorry
 
 
 /-- **Question 7.**
@@ -132,8 +122,7 @@ The **trace** of a square matrix is the sum of its diagonal entries. For a `2 ×
 show that `tr A = A₁₁ + A₂₂`. -/
 theorem q7_trace_fin_two (A : Matrix (Fin 2) (Fin 2) ℝ) :
     Matrix.trace A = A 0 0 + A 1 1 := by
-  unfold Matrix.trace
-  simp only [Matrix.diag_apply, Fin.sum_univ_two, Fin.isValue]
+  sorry
 
 
 /-- **Question 8.**
@@ -156,12 +145,8 @@ There are no real matrices `A, B` with `A B − B A = I`.
 
 Hint: apply trace to the proposed equation. -/
 theorem q9_no_commutator_eq_one (A B : Matrix (Fin 2) (Fin 2) ℝ) : A * B - B * A ≠ 1 := by
-  intro h
-  apply_fun Matrix.trace at h
-  simp only [Matrix.trace_sub, Matrix.trace_one, Fintype.card_fin, Nat.cast_ofNat] at h
-  rw [Matrix.trace_mul_comm B A] at h
-  simp_all only [sub_self, OfNat.zero_ne_ofNat]
-  
+  sorry
+
 
 /-- **Question 10.**
 
@@ -169,8 +154,7 @@ Show that trace is a *similarity invariant*: if `Q P = I`, then `tr (P A Q) = tr
 its representation `P A Q` in another basis have the same trace. -/
 theorem q10_trace_conj_invariant (A P Q : Matrix (Fin 2) (Fin 2) ℝ) (h : Q * P = 1) :
     Matrix.trace (P * A * Q) = Matrix.trace A := by
-  rw [Matrix.trace_mul_comm, ← mul_assoc, h]
-  simp_all only [one_mul]
+  sorry
 
 
 end Exercises.LinearAlgebra.Matrices
