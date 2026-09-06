@@ -65,7 +65,7 @@ Every left coset `gH` has the same size as `H`: the coset `g • ↑H` and `↑H
 (`Set.ncard`). -/
 theorem q1_coset_card (g : G) (H : Subgroup G) :
     (g • (H : Set G)).ncard = (H : Set G).ncard := by
-  sorry
+  simp only [Set.ncard_smul_set]
 
 
 /-- **Question 2.**

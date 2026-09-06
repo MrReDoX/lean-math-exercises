@@ -57,7 +57,15 @@ The solution set of `f x = w` is a coset of the kernel: if `f x₀ = w`, then `f
 `x - x₀ ∈ ker f`. -/
 theorem q1_fiber_coset (f : V →ₗ[K] W) (x₀ : V) (w : W) (h : f x₀ = w) (x : V) :
     f x = w ↔ x - x₀ ∈ ker f := by
-  sorry
+  constructor <;> intro h
+  · rw [@sub_mem_ker_iff]
+    rename_i h_1
+    subst h_1
+    simp_all only
+  · rw [sub_mem_ker_iff] at h
+    rename_i h_1
+    subst h_1
+    simp_all only
 
 
 /-- **Question 2.**
@@ -67,7 +75,28 @@ A linear map is injective iff its kernel is trivial: `Injective f ↔ ker f = �
 Prove without using `LinearMap.ker_eq_bot`. -/
 theorem q2_injective_iff_ker (f : V →ₗ[K] W) :
     Function.Injective f ↔ ker f = ⊥ := by
-  sorry
+  constructor <;> intro h
+  · rw [@ker_eq_bot']
+    intro m hm
+    simp_all only [LinearMap.map_eq_zero_iff]
+  · unfold Function.Injective
+    intro v w hvw
+    have : f (v - w) = 0 := by
+      simp only [map_sub]
+      apply_fun (· + f w)
+      simp only [sub_add_cancel, zero_add]
+      rw [hvw]
+      unfold Function.Injective
+      intro v₁ v₂ hv1v2
+      simp_all only [add_left_inj]
+    --  done
+    rw [@ker_eq_bot'] at h
+    specialize h (v - w) this
+    apply_fun (· - w)
+    simp only [sub_self]
+    trivial
+    unfold Function.Injective
+    simp only [sub_left_inj, imp_self, implies_true]
 
 
 /-- **Question 3.**
@@ -77,7 +106,19 @@ A linear map is surjective iff its range is the whole codomain: `Surjective f �
 Prove without using `LinearMap.range_eq_top`. -/
 theorem q3_surjective_iff_range (f : V →ₗ[K] W) :
     Function.Surjective f ↔ range f = ⊤ := by
-  sorry
+  constructor <;> intro h
+  · rw [@Submodule.eq_top_iff']
+    intro w
+    rw [@mem_range]
+    unfold Function.Surjective at h
+    specialize h w
+    simp_all only
+  · unfold Function.Surjective
+    intro b
+    rw [Submodule.eq_top_iff'] at h
+    specialize h b
+    rw [@mem_range] at h
+    simp_all only
 
 
 /-- **Question 4.**
@@ -88,7 +129,13 @@ for `f : V →ₗ[K] V`, `Injective f ↔ Surjective f`.
 Prove without using `LinearMap.injective_iff_surjective`. -/
 theorem q4_inj_iff_surj [FiniteDimensional K V] (f : V →ₗ[K] V) :
     Function.Injective f ↔ Function.Surjective f := by
-  sorry
+  constructor <;> intro h
+  · rw [q2_injective_iff_ker] at h
+    rw [q3_surjective_iff_range]
+    exact ker_eq_bot_iff_range_eq_top.mp h
+  · rw [q2_injective_iff_ker]
+    rw [q3_surjective_iff_range] at h
+    exact ker_eq_bot_iff_range_eq_top.mpr h
 
 
 /-- **Question 5.**
@@ -135,7 +182,21 @@ The projection `p (x, y) = (x, 0)` on `ℝ²` is idempotent (`p ∘ p = p`) but 
 nor surjective. -/
 theorem q7_projection :
     proj₁ ∘ₗ proj₁ = proj₁ ∧ ¬ Function.Injective proj₁ ∧ ¬ Function.Surjective proj₁ := by
-  sorry
+  refine ⟨?_, ?_, ?_⟩
+  · ext v
+    simp only [coe_comp, coe_single, Function.comp_apply, proj₁_apply, Nat.succ_eq_add_one,
+      Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero]
+  · intro h
+    unfold Function.Injective at h
+    specialize h (a₁ := ![0, 1]) (a₂ := ![0, 0])
+    simp_all only [proj₁_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.vecCons_inj, one_ne_zero, and_true, and_false, imp_false, not_true_eq_false]
+  · intro h
+    unfold Function.Surjective at h
+    simp_all only [proj₁_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue]
+    specialize h ![0, 1]
+    choose a ha using h
+    simp_all only [Fin.isValue, Matrix.vecCons_inj, zero_ne_one, and_true, and_false]
 
 
 /-- **Question 8.**
@@ -143,7 +204,19 @@ theorem q7_projection :
 The projection `g (x, y, z) = (x, y)` from `ℝ³` to `ℝ²` is surjective but not injective. -/
 theorem q8_project_surj_not_inj :
     Function.Surjective proj₃₂ ∧ ¬ Function.Injective proj₃₂ := by
-  sorry
+  constructor
+  · unfold Function.Surjective
+    intro b
+    use ![b 0, b 1, 0]
+    simp only [Fin.isValue, proj₃₂_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.cons_val_zero,
+      Matrix.cons_val_one]
+    ext i
+    fin_cases i <;> simp
+  · intro h
+    unfold Function.Injective at h
+    specialize h (a₁ := ![0, 0, 1]) (a₂ := ![0, 0, 2])
+    simp_all only [proj₃₂_apply, Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.vecCons_inj, OfNat.one_ne_ofNat, and_true, and_false, imp_false, not_true_eq_false]
 
 
 /-- **Question 9.**

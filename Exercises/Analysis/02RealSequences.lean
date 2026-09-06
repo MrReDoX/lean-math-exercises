@@ -58,7 +58,15 @@ The sequence `1 / (n + 1)` converges to `0` in `ℝ`.
 Prove without using `tendsto_one_div_add_atTop_nhds_zero_nat`. -/
 theorem q1_reciprocal_tends_to_zero :
     Tendsto (fun n : ℕ => (1 : ℝ) / (n + 1)) atTop (nhds 0) := by
-  sorry
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  use Nat.ceil (1 / ε - 1) + 1
+  intro n hn
+  simp_all only [gt_iff_lt, one_div, Nat.ceil_sub_one, Nat.one_le_ceil_iff, inv_pos, Nat.sub_add_cancel, ge_iff_le,
+    Nat.ceil_le, dist_zero_right, norm_inv, Real.norm_eq_abs]
+  rw [abs_of_pos (by grind)]
+  field_simp at *
+  linarith
 
 
 /-- **Question 2.**

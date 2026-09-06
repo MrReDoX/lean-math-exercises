@@ -53,7 +53,16 @@ In a metric space, every open ball `B(x,r)` is open.
 Prove without using `Metric.isOpen_ball`. -/
 theorem q1_open_ball {X : Type*} [PseudoMetricSpace X] (x : X) (r : ℝ) :
     IsOpen (Metric.ball x r) := by
-  sorry
+  rw [@Metric.isOpen_iff]
+  intro y h
+  dsimp [Metric.ball] at *
+  use r - dist y x
+  constructor
+  · simp; trivial
+  · simp
+    intro a ah
+    have triangle : dist a x ≤ dist a y + dist y x := by exact dist_triangle a y x
+    grind only
 
 
 /-- **Question 2.**
@@ -63,8 +72,32 @@ If `xₙ → x` and `xₙ → y` in a metric space, then `x = y`.
 Prove without using `tendsto_nhds_unique`. -/
 theorem q2_unique_limit {X : Type*} [MetricSpace X] {u : ℕ → X} {x y : X}
     (hx : Tendsto u atTop (nhds x)) (hy : Tendsto u atTop (nhds y)) : x = y := by
-  sorry
+  rw [Metric.tendsto_atTop] at hx hy
+  suffices h : dist x y = 0 by exact dist_eq_zero.mp h
+  have crucial : ∀ ε > 0, dist x y < ε := by
+    intro ε hε
+    specialize hx (ε / 2) (by linarith)
+    specialize hy (ε / 2) (by linarith)
 
+    simp_all only [ge_iff_le, gt_iff_lt]
+    obtain ⟨w, h⟩ := hy
+    obtain ⟨w_1, h_1⟩ := hx
+
+    let N := max w w_1
+
+    specialize h N (by grind)
+    specialize h_1 N (by grind)
+
+    calc
+      dist x y ≤ dist x (u N) + dist (u N) y := by exact dist_triangle x (u N) y
+      _ < (ε / 2) + (ε / 2) := by
+        nth_rewrite 1 [dist_comm]
+        exact add_lt_add h_1 h
+      _ = ε := by simp only [add_halves]
+  have : dist x y ≥ 0 := by simp_all only [gt_iff_lt, ge_iff_le, dist_nonneg]
+  by_contra! h
+  have : dist x y > 0 := by grind only
+  grind only [#373d]
 
 /-- **Question 3.**
 
@@ -74,8 +107,52 @@ For maps between metric spaces, `f` is continuous if and only if `xₙ → x` im
 Prove without using `continuous_iff_seqContinuous`. -/
 theorem q3_continuous_iff_seqContinuous {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y]
     (f : X → Y) : Continuous f ↔ SeqContinuous f := by
-  sorry
+  constructor <;> intro h
+  · unfold SeqContinuous
+    intro x p hxp
+    rw [Metric.tendsto_atTop] at *
+    rw [Metric.continuous_iff] at h
 
+    specialize h p
+
+    intro ε hε
+
+    choose δ hδ using h ε hε
+    obtain ⟨hδpos, cont⟩ := hδ
+
+    specialize hxp δ hδpos
+    choose N hN using hxp
+
+    use N
+    intro n hn
+    exact Metric.mem_ball.mp (cont (x n) (hN n hn))
+  · rw [Metric.continuous_iff]
+    unfold SeqContinuous at h
+    intro p ε hε
+    by_contra! contra
+
+    choose x hx1 hx2 using fun n : ℕ ↦ contra (1 / (n + 1)) (by positivity)
+
+    have key := @h x p (by
+      rw [Metric.tendsto_atTop]
+      intro ε₁ hε₁
+      obtain ⟨N, hN⟩ := exists_nat_gt (1 / ε₁)
+      use N
+      intro n hn
+      have h1 : dist (x n) p < 1 / (n + 1) := hx1 n
+      have h2 : (1:ℝ) / (n + 1) ≤ 1 / (N + 1) := by
+        field_simp at *
+        simp_all only [ge_iff_le, add_le_add_iff_right, Nat.cast_le]
+      have h3 : (1:ℝ) / (N + 1) < ε₁ := by
+        field_simp at *
+        grind only
+      linarith
+    )
+
+    rw [Metric.tendsto_atTop] at key
+    simp only [Function.comp_apply] at key
+    obtain ⟨N, hN⟩ := key ε hε
+    nlinarith [hx2 N, hN N (by trivial)]
 
 /-- **Question 4.**
 

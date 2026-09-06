@@ -76,7 +76,14 @@ universal property that characterizes `U ⊔ W` as the least subspace containing
 Prove without using `sup_le_iff`. -/
 theorem q1_sup_le_iff (U W X : Submodule K V) :
     U ⊔ W ≤ X ↔ U ≤ X ∧ W ≤ X := by
-  sorry
+  constructor <;> intro h
+  · constructor
+    · have := @le_sup_left (Submodule K V) _ U W
+      exact (Submodule.toAddSubgroup_le U X).mp fun ⦃x⦄ a => h (this a)
+    · have := @le_sup_right (Submodule K V) _ U W
+      exact (Submodule.toAddSubgroup_le W X).mp fun ⦃x⦄ a => h (this a)
+  · obtain ⟨left, right⟩ := h
+    exact sup_le left right
 
 
 /-- **Question 2.**
@@ -87,9 +94,24 @@ For the forward implication, define the subspace `S` of vectors that have such a
 Show that `U ≤ S` and `W ≤ S`, then use Question 1 to conclude `U ⊔ W ≤ S`.
 
 Prove without using `Submodule.mem_sup` (or `Submodule.mem_sup'`). -/
+
 theorem q2_mem_sup_iff (U W : Submodule K V) (x : V) :
     x ∈ U ⊔ W ↔ ∃ u ∈ U, ∃ w ∈ W, u + w = x := by
-  sorry
+  constructor <;> intro h
+  ·
+    let S : Submodule K V := {
+      carrier := {x | ∃ u ∈ U, ∃ w ∈ W, u + w = x}
+      add_mem' a b := by sorry
+      zero_mem' := by sorry
+      smul_mem' := by sorry
+    }
+    have : U ≤ S := by sorry
+    have : W ≤ S := by sorry
+    have : U ⊔ W ≤ S := by sorry
+    exact Set.mem_image2.mp (this h)
+  · sorry
+
+
 
 
 /-- **Question 3.**
@@ -169,7 +191,18 @@ The set of vectors in `ℝ³` whose coordinates sum to `0` is a subspace: produc
 theorem q9_sumZero_isSubspace :
     ∃ U : Submodule ℝ (Fin 3 → ℝ),
       (U : Set (Fin 3 → ℝ)) = {v | v 0 + v 1 + v 2 = 0} := by
-  sorry
+  let f : (Fin 3 → ℝ) →ₗ[ℝ] ℝ := {
+    toFun v := v 0 + v 1 + v 2
+    map_add' x y := by
+      simp_all only [Fin.isValue, Pi.add_apply]
+      ring_nf
+    map_smul' m x := by
+      simp_all only [Fin.isValue, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+      ring_nf
+  }
+  use LinearMap.ker f
+  simp_all only [Fin.isValue, f]
+  trivial
 
 
 /-- **Question 10.**
@@ -179,7 +212,26 @@ subspace has underlying set `{v | v 0 = 1}`. -/
 theorem q10_firstCoordOne_notSubspace :
     ¬ ∃ U : Submodule ℝ (Fin 3 → ℝ),
       (U : Set (Fin 3 → ℝ)) = {v | v 0 = 1} := by
-  sorry
+  by_contra! h
+  obtain ⟨w, h⟩ := h
+  have counter : ![1, 0, 0] ∈ w := by
+    rw [← SetLike.mem_coe, h]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero]
+
+  have : ![2, 0, 0] ∈ w := by
+    have : ![(2 : ℝ), 0, 0] = ![1, 0, 0] + ![1, 0, 0] := by
+      simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.add_cons, Matrix.head_cons,
+        Matrix.tail_cons, add_zero, Matrix.empty_add_empty, Matrix.vecCons_inj, and_true]
+      ring_nf
+    rw [this]
+    exact (Submodule.add_mem_iff_right w counter).mpr counter
+
+  have : ![2, 0, 0] ∈ (w : Set (Fin 3 → ℝ)) := by
+    exact (Submodule.mem_carrier w).mp this
+
+  simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Set.mem_ofPred_eq, Matrix.cons_val_zero,
+    OfNat.ofNat_ne_one]
 
 
 /-- **Question 11.**
@@ -189,6 +241,25 @@ subspace. -/
 theorem q11_axes_notSubspace :
     ¬ ∃ U : Submodule ℝ (Fin 2 → ℝ),
       (U : Set (Fin 2 → ℝ)) = {v | v 0 * v 1 = 0} := by
-  sorry
+  simp_all only [Fin.isValue, mul_eq_zero, not_exists]
+  intro x
+  apply Aesop.BuiltinRules.not_intro
+  intro a
+  have candidat : ![(1 : ℝ), 0] ∈ x := by
+    rw [← SetLike.mem_coe, a]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero, one_ne_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, or_true]
+  have deputat : ![0, (1 : ℝ)] ∈ x := by
+    rw [← SetLike.mem_coe, a]
+    simp only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Set.mem_ofPred_eq,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, one_ne_zero, or_false]
+  have counter : ![1, 1] ∈ (x : Set (Fin 2 → ℝ)) := by
+    rw [SetLike.mem_coe]
+    have := x.add_mem candidat deputat
+    simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Matrix.add_cons,
+      Matrix.head_cons, add_zero, Matrix.tail_cons, zero_add, Matrix.empty_add_empty]
+  rw [a] at counter
+  simp_all only [Fin.isValue, Nat.succ_eq_add_one, Nat.reduceAdd, Set.mem_ofPred_eq, Matrix.cons_val_zero, one_ne_zero,
+    Matrix.cons_val_one, Matrix.cons_val_fin_one, or_self]
 
 end Exercises.LinearAlgebra.Subspaces
