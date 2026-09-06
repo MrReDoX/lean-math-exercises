@@ -70,7 +70,17 @@ A vector has eigenvalue `λ` exactly when subtracting `λ` times the identity se
 Prove without using `Module.End.mem_eigenspace_iff`. -/
 theorem q1_eigen_iff_ker (f : Module.End K V) (l : K) (v : V) :
     f v = l • v ↔ v ∈ LinearMap.ker (f - l • 1) := by
-  sorry
+  constructor <;> intro h
+  · simp only [LinearMap.mem_ker, LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply]
+    rw [h]
+    module
+  · rw [LinearMap.mem_ker] at h
+    simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply] at h
+    apply_fun (· - l • v)
+    simp_all only [sub_self]
+    unfold Function.Injective
+    intro a₁ a₂ a
+    simp_all only [sub_left_inj]
 
 
 /-- **Question 2.**
@@ -103,7 +113,9 @@ Find two eigenpairs of the matrix `!![2,1;1,2]`. -/
 theorem q4_eig_2x2 :
     Matrix.toLin' (!![2, 1; 1, 2] : Matrix (Fin 2) (Fin 2) ℝ) ![1, 1] = (3 : ℝ) • ![1, 1] ∧
     Matrix.toLin' (!![2, 1; 1, 2] : Matrix (Fin 2) (Fin 2) ℝ) ![1, -1] = (1 : ℝ) • ![1, -1] := by
-  sorry
+  constructor
+  · ext i; fin_cases i <;> simp <;> ring
+  · ext i; fin_cases i <;> simp <;> ring
 
 
 /-- **Question 5.**
@@ -140,8 +152,15 @@ theorem q7_diagonal_eigs :
 The two eigenvectors of `!![2,1;1,2]` found above are linearly independent. -/
 theorem q8_distinct_independent_concrete :
     LinearIndependent ℝ ![(![1, 1] : Fin 2 → ℝ), ![1, -1]] := by
-  sorry
-
+  rw [linearIndependent_fin2]
+  simp_all only [Nat.succ_eq_add_one, Nat.reduceAdd, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_fin_one, ne_eq,
+    Matrix.cons_eq_zero_iff, one_ne_zero, neg_eq_zero, Matrix.zero_empty, and_true, and_self, not_false_eq_true,
+    Matrix.smul_cons, smul_eq_mul, mul_one, mul_neg, Matrix.smul_empty, Matrix.cons_val_zero, Matrix.vecCons_inj,
+    not_and, forall_eq, true_and]
+  apply Aesop.BuiltinRules.not_intro
+  intro a
+  norm_num at a
+  
 
 /-- **Question 9.**
 

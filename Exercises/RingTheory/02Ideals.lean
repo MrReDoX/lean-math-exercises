@@ -74,7 +74,9 @@ The quotient by an ideal is a domain exactly when that ideal is prime.
 
 Prove without using `Ideal.Quotient.isDomain_iff_prime` or `Ideal.Quotient.isDomain`. -/
 theorem q3_quotient_domain_iff_prime (I : Ideal R) : IsDomain (R ⧸ I) ↔ I.IsPrime := by
-  sorry
+  constructor <;> intro h
+  · sorry
+  · sorry
 
 
 /-- **Question 4.**

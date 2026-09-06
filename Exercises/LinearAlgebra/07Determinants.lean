@@ -53,7 +53,10 @@ end
 Use the signed-sum definition once to establish the `2 × 2` determinant formula. This is the only
 purely computational warm-up; later questions use it as evidence for general principles. -/
 theorem q1_det_2x2 : (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ).det = -2 := by
-  sorry
+  rw [Matrix.det_fin_two]
+  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, cons_val_fin_one, cons_val_one,
+    one_mul]
+  ring_nf
 
 
 /-- **Question 2.**
@@ -62,7 +65,10 @@ Evaluate one concrete `3 × 3` determinant from the closed determinant formula. 
 signs in the two three-term cyclic sums. -/
 theorem q2_det_3x3 :
     (!![2, 0, 1; 1, 3, 2; 0, 1, 1] : Matrix (Fin 3) (Fin 3) ℝ).det = 3 := by
-  sorry
+  rw [Matrix.det_fin_three]
+  simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, cons_val_fin_one, cons_val_one,
+    cons_val, mul_one, sub_zero, zero_mul, mul_zero, add_zero, one_mul]
+  ring_nf
 
 
 /-- **Question 3.**
@@ -74,7 +80,10 @@ Prove without using `Matrix.det_mul`. -/
 theorem q3_det_mul_concrete :
     ((!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ) * !![5, 6; 7, 8]).det
       = (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ).det * (!![5, 6; 7, 8]).det := by
-  sorry
+  simp only [cons_mul, Nat.succ_eq_add_one, Nat.reduceAdd, vecMul_cons, head_cons, one_smul,
+    tail_cons, smul_cons, smul_eq_mul, smul_empty, empty_vecMul, add_zero, add_cons,
+    empty_add_empty, empty_mul, Equiv.symm_apply_apply, det_fin_two_of, one_mul]
+  ring_nf
 
 
 /-- **Question 4.**
@@ -95,8 +104,12 @@ theorem q5_vandermonde (x y z : ℝ) :
     (!![1, x; 1, y] : Matrix (Fin 2) (Fin 2) ℝ).det = y - x ∧
     (!![1, x, x^2; 1, y, y^2; 1, z, z^2] : Matrix (Fin 3) (Fin 3) ℝ).det
       = (y - x) * (z - x) * (z - y) := by
-  sorry
-
+  constructor
+  · simp only [det_fin_two_of, one_mul, mul_one]
+  · rw [Matrix.det_fin_three]
+    simp only [Fin.isValue, of_apply, cons_val', cons_val_zero, cons_val_fin_one, cons_val_one,
+      one_mul, cons_val, mul_one]
+    ring_nf
 
 /-- **Question 6.**
 
@@ -111,7 +124,8 @@ Relate row scaling to signed area: compare a matrix with the result of scaling o
 theorem q7_det_row_scale :
     (!![2, 4; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ).det
       = 2 * (!![1, 2; 3, 4] : Matrix (Fin 2) (Fin 2) ℝ).det := by
-  sorry
+  simp only [det_fin_two_of, one_mul]
+  ring_nf
 
 
 /-- **Question 8.**
@@ -130,7 +144,8 @@ theorem q8_det_transpose {m : Type*} [Fintype m] [DecidableEq m] (A : Matrix m m
 The determinant of an inverse is the reciprocal: if `A B = I`, then `det A · det B = 1`. -/
 theorem q9_det_inv (A B : Matrix (Fin 2) (Fin 2) ℝ) (h : A * B = 1) :
     A.det * B.det = 1 := by
-  sorry
+  rw [← det_mul, h]
+  simp only [det_one]
 
 
 /-- **Question 10.**
