@@ -92,7 +92,7 @@ The matrix `!![0,-1;1,0]` acts as the `90°` rotation of `ℝ²`: it sends `(1,0
 theorem q3_rotation_action :
     Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℝ) ![1, 0] = ![0, 1] ∧
     Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℝ) ![0, 1] = ![-1, 0] := by
-  sorry
+  constructor <;> ext i <;> fin_cases i <;> simp
 
 
 /-- **Question 4.**
@@ -122,7 +122,8 @@ Verify that `!![2,1;1,1]` is invertible with inverse `!![1,-1;-1,2]`, by checkin
 is the identity. -/
 theorem q6_inverse_concrete :
     (!![2, 1; 1, 1] : Matrix (Fin 2) (Fin 2) ℝ) * !![1, -1; -1, 2] = 1 := by
-  sorry
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp <;> ring_nf
 
 
 /-- **Question 7.**
@@ -131,7 +132,8 @@ The **trace** of a square matrix is the sum of its diagonal entries. For a `2 ×
 show that `tr A = A₁₁ + A₂₂`. -/
 theorem q7_trace_fin_two (A : Matrix (Fin 2) (Fin 2) ℝ) :
     Matrix.trace A = A 0 0 + A 1 1 := by
-  sorry
+  unfold Matrix.trace
+  simp only [Matrix.diag_apply, Fin.sum_univ_two, Fin.isValue]
 
 
 /-- **Question 8.**
@@ -154,8 +156,12 @@ There are no real matrices `A, B` with `A B − B A = I`.
 
 Hint: apply trace to the proposed equation. -/
 theorem q9_no_commutator_eq_one (A B : Matrix (Fin 2) (Fin 2) ℝ) : A * B - B * A ≠ 1 := by
-  sorry
-
+  intro h
+  apply_fun Matrix.trace at h
+  simp only [Matrix.trace_sub, Matrix.trace_one, Fintype.card_fin, Nat.cast_ofNat] at h
+  rw [Matrix.trace_mul_comm B A] at h
+  simp_all only [sub_self, OfNat.zero_ne_ofNat]
+  
 
 /-- **Question 10.**
 
@@ -163,7 +169,8 @@ Show that trace is a *similarity invariant*: if `Q P = I`, then `tr (P A Q) = tr
 its representation `P A Q` in another basis have the same trace. -/
 theorem q10_trace_conj_invariant (A P Q : Matrix (Fin 2) (Fin 2) ℝ) (h : Q * P = 1) :
     Matrix.trace (P * A * Q) = Matrix.trace A := by
-  sorry
+  rw [Matrix.trace_mul_comm, ← mul_assoc, h]
+  simp_all only [one_mul]
 
 
 end Exercises.LinearAlgebra.Matrices
