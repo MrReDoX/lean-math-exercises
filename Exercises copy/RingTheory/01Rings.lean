@@ -148,10 +148,23 @@ theorem q3_char_prime_or_zero (p : ℕ) [IsDomain R] [CharP R p] : p.Prime ∨ p
 
 /-- **Question 4.**
 
-The residue class of `5` is a unit modulo `12`. -/
-theorem q4_zmod12_unit : IsUnit (5 : ZMod 12) := by
-  sorry
-
+The coordinate-sum function `(m, n) ↦ m + n` from `ℤ × ℤ` to `ℤ` is not a
+non-unital ring homomorphism. -/
+theorem q4_coordinate_sum_not_nonunital_ring_hom :
+    ¬ ∃ f : ℤ × ℤ →ₙ+* ℤ, ∀ x : ℤ × ℤ, f x = x.1 + x.2 := by
+  intro h
+  simp_all only [Prod.forall]
+  obtain ⟨ϕ, h⟩ := h
+  -- specialize h (2 * 3) (1 * 4)
+  have one_hand : ϕ (6, 4) = 10 := by rw [h 6 4]; decide
+  have other_hand : ϕ (6, 4) = 21 := by
+    calc
+      _ = ϕ (2 * 3, 1 * 4) := by simp only [Int.reduceMul, one_mul]
+      _ = ϕ ((2, 1) * (3, 4)) := by simp only [Int.reduceMul, one_mul, Prod.mk_mul_mk]
+      _ = ϕ (2, 1) * ϕ (3, 4) := by rw [map_mul]
+      _ = (2 + 1) * (3 + 4) := by rw [h 2 1, h 3 4]
+      _ = 21 := by ring_nf
+  simp_all only [Int.reduceAdd, OfNat.ofNat_eq_ofNat, Nat.reduceEqDiff]
 
 /-- **Question 5.**
 
@@ -166,7 +179,28 @@ theorem q5_determinant_not_additive :
 A multiplicative-and-additive map from `ℤ` to itself is either zero or the identity. -/
 theorem q6_nonunital_ring_hom_int (f : ℤ →ₙ+* ℤ) :
     f = 0 ∨ f = NonUnitalRingHom.id ℤ := by
-  sorry
+  let mm := f 1
+  by_cases h : mm = 0
+  · left
+    ext z
+    nth_grewrite 1 [← mul_one z]
+    rw [map_mul]
+    change f z * mm = 0
+    simp only [h]
+    ring_nf
+  · right
+    simp_all only [mm]
+    push Not at h
+    ext z
+    simp only [NonUnitalRingHom.id_apply]
+    have h1 : f 1 = 1 := by
+      have h_mul : f 1 * f 1 = f 1 := by rw [← map_mul, mul_one]
+      exact mul_left_cancel₀ h (by rw [h_mul, mul_one])
+    calc
+      f z = f (z • (1 : ℤ)) := by simp only [Int.zsmul_eq_mul, mul_one]
+      _   = z • f 1         := by exact map_zsmul f z 1
+      _   = z • (1 : ℤ)     := by rw [h1]
+      _   = z               := by simp only [Int.zsmul_eq_mul, mul_one]
 
 
 /-- **Question 7.**
