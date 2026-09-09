@@ -209,7 +209,11 @@ Any two unital ring homomorphisms from `ℤ` to a fixed ring are equal.
 
 Prove without using `RingHom.ext_int`. -/
 theorem q7_unique_int_ring_hom (f g : ℤ →+* R) : f = g := by
-  sorry
+  have f_one := f.map_one
+  have g_one := g.map_one
+  ext z
+  have (ϰ : ℤ →+* R) : ϰ = (Int.castRingHom R : ℤ →+* R) := by exact RingHom.eq_intCast' ϰ
+  rw [this f, this g]
 
 
 /-- **Question 8.**
@@ -217,7 +221,31 @@ theorem q7_unique_int_ring_hom (f g : ℤ →+* R) : f = g := by
 A homomorphism from a field is either zero or injective. -/
 theorem q8_field_hom_zero_or_injective {K L : Type*} [Field K] [Ring L]
     (f : K →ₙ+* L) : f = 0 ∨ Function.Injective f := by
-  sorry
+  by_cases h : f = 0
+  · left; trivial
+  · push Not at h
+    right
+    intro x y hxy
+    have lean_cant_prove : f (x - y) = 0 := by simp_all only [ne_eq, map_sub, sub_self]
+    suffices x - y = 0 by
+      apply_fun (· - y)
+      simp only [sub_self]
+      trivial
+      unfold Function.Injective
+      intro a₁ a₂ a
+      simp_all only [ne_eq, map_zero, sub_left_inj]
+    by_contra! mm
+    have : (x - y) * (x - y)⁻¹ = 1 := by exact CommGroupWithZero.mul_inv_cancel (x - y) mm
+    apply_fun f at this
+    rw [map_mul, lean_cant_prove, zero_mul] at this
+    symm at this
+    have h1 : f 1 ≠ 0 := by
+      contrapose! h
+      ext x
+      simp only [NonUnitalRingHom.zero_apply]
+      rw [← mul_one x, map_mul, h, mul_zero]
+    trivial
+
 
 
 /-- **Question 9.**
