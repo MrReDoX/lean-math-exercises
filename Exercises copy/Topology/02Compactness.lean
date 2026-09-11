@@ -74,7 +74,21 @@ not by invoking interval compactness directly.
 
 Prove without using `isCompact_Icc`. -/
 theorem q2_closed_interval_compact (a b : ℝ) : IsCompact (Set.Icc a b) := by
-  sorry
+  rw [@Metric.isCompact_iff_isClosed_bounded]
+  constructor
+  · have h_eq : Set.Icc a b = Set.Ici a ∩ Set.Iic b := by rfl
+    have h1 : IsClosed (Set.Ici a) := by exact isClosed_Ici
+    have h2 : IsClosed (Set.Iic b) := by exact isClosed_Iic
+    rw [h_eq]
+    exact IsClosed.inter h1 h2
+  · rw [Metric.isBounded_iff]
+    use b - a
+    intro x hx y hy
+    simp_all only [mem_Icc]
+    obtain ⟨left, right⟩ := hx
+    obtain ⟨left_1, right_1⟩ := hy
+    rw [Real.dist_eq, abs_le]
+    constructor <;> nlinarith
 
 
 /-- **Question 3.**

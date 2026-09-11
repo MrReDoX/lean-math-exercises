@@ -108,7 +108,10 @@ Every maximal ideal in a commutative ring is prime.
 
 Prove without using `Ideal.IsMaximal.isPrime`. -/
 theorem q4_maximal_prime (I : Ideal R) (hI : I.IsMaximal) : I.IsPrime := by
-  sorry
+  rw [← Ideal.Quotient.isDomain_iff_prime]
+  suffices h : IsField (R ⧸ I)
+  exact Ideal.Quotient.isDomain I
+  exact (q3_quotient_field_iff_maximal I).mp hI
 
 
 /-- **Question 5.**

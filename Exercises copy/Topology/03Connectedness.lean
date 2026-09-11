@@ -54,7 +54,22 @@ indiscrete space is connected but not metrizable.
 Prove without using `isConnected_univ`. -/
 theorem q1_indiscrete_connected [Nonempty X] [IndiscreteTopology X] :
     IsConnected (Set.univ : Set X) := by
-  sorry
+  unfold IsConnected
+  constructor
+  · simp only [univ_nonempty]
+  · unfold IsPreconnected
+    intro u v hu hv huniv hinteru hinterv
+    simp_all only [univ_subset_iff, univ_inter]
+
+    have h_univ (s : Set X) (hs_open : IsOpen s) (hs_ne : s.Nonempty) : s = Set.univ := by
+      rcases (IndiscreteTopology.isOpen_iff s).mp hs_open with rfl | rfl
+      · simp_all only [isOpen_empty, Set.not_nonempty_empty]
+      · rfl
+
+    have hu_eq := h_univ u hu hinteru
+    have hv_eq := h_univ v hv hinterv
+    subst hu_eq hv_eq
+    simp_all only [isOpen_univ, univ_nonempty, union_self, inter_self]
 
 
 /-- **Question 2.**

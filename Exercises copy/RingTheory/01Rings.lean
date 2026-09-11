@@ -255,7 +255,11 @@ A unital ring homomorphism maps units to units.
 Prove without using `IsUnit.map`. -/
 theorem q9_ring_hom_maps_units {S : Type*} [Ring S] (f : R →+* S)
     {a : R} (ha : IsUnit a) : IsUnit (f a) := by
-  sorry
+  rw [@isUnit_iff_exists] at *
+  obtain ⟨w, h⟩ := ha
+  obtain ⟨left, right⟩ := h
+  use f w
+  constructor <;> try rw [← map_mul]; simp only [left, right]; exact RingHom.map_one f
 
 
 /-- **Question 10.**
@@ -264,7 +268,9 @@ If `x² = 0`, then `1 + x` is a unit.
 
 Prove without using `IsNilpotent.isUnit_one_add` or `IsNilpotent.isUnit_add_one`. -/
 theorem q10_one_add_square_zero_is_unit (x : R) (hx : x ^ 2 = 0) : IsUnit (1 + x) := by
-  sorry
+  rw [isUnit_iff_exists]
+  use 1 - x
+  constructor <;> ring_nf <;> simp only [hx] <;> ring_nf
 
 
 /-- **Question 11.**
@@ -284,7 +290,24 @@ sends to zero. -/
 theorem q12_left_mul_injective_iff [Nontrivial R] (a : R) :
     Function.Injective (fun b : R => a * b) ↔
       a ≠ 0 ∧ ∀ b : R, a * b = 0 → b = 0 := by
-  sorry
+  constructor <;> intro h
+  · unfold Function.Injective at h
+    simp only at h
+    constructor
+    · by_contra mm
+      subst mm
+      have := @h (a₁ := 0) (a₂ := 1)
+      simp_all only [mul_zero, mul_one, one_mul, implies_true, zero_ne_one, imp_false, not_true_eq_false]
+    · intro b hb
+      have := @h (a₁ := b) (a₂ := 0)
+      simp_all only [mul_zero, forall_const]
+  · intro x y hxy
+    simp only at hxy
+    simp_all only [ne_eq]
+    obtain ⟨left, right⟩ := h
+    have : a * (x - y) = 0 := by grind only
+    specialize right (x - y) this
+    grind only
 
 
 /-- **Question 13.**
@@ -292,7 +315,20 @@ theorem q12_left_mul_injective_iff [Nontrivial R] (a : R) :
 Multiplication by `a` is surjective exactly when `a` is a unit. -/
 theorem q13_left_mul_surjective_iff (a : R) :
     Function.Surjective (fun b : R => a * b) ↔ IsUnit a := by
-  sorry
+  constructor <;> intro h <;> unfold Function.Surjective at *
+  · rw [@isUnit_iff_exists]
+    simp at h
+    specialize h 1
+    obtain ⟨w, h⟩ := h
+    use w
+    grind => ring
+  · rw [@isUnit_iff_exists] at h
+    intro b
+    simp_all only
+    obtain ⟨w, h⟩ := h
+    obtain ⟨left, right⟩ := h
+    use w * b
+    grind => ring
 
 
 /-- **Question 14.**
@@ -311,7 +347,10 @@ In a domain, an idempotent is either zero or one.
 
 Prove without using `IsIdempotentElem.iff_eq_zero_or_one`. -/
 theorem q15_domain_idempotent [IsDomain R] (e : R) (he : e * e = e) : e = 0 ∨ e = 1 := by
-  sorry
+  apply_fun (· -e) at he
+  nth_rewrite 3 [← mul_one e] at he
+  rw [← mul_sub, sub_self] at he
+  rcases mul_eq_zero.mp he with h | h <;> grind only
 
 
 /-- **Question 16.**
