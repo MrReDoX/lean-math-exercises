@@ -95,7 +95,34 @@ whose underlying set is `{a | ∀ g, a * g = g * a}`.
 Prove without using `Subgroup.center`. -/
 theorem q3_center_isSubgroup :
     ∃ H : Subgroup G, (↑H : Set G) = {a | ∀ g, a * g = g * a} := by
-  sorry
+  use {
+    carrier := {a | ∀ (g : G), a * g = g * a}
+    mul_mem' := by
+      simp
+      intro daun eblan hdaun heblan g
+      calc
+        _ = daun * (eblan * g) := by group
+        _ = daun * (g * eblan) := by simp_all only
+        _ = (g * eblan) * daun := by simp_all only
+        _ = g * (eblan * daun) := by group
+        _ = g * (daun * eblan) := by
+          specialize heblan daun
+          simp_all only
+    one_mem' := by simp only [Set.mem_ofPred_eq, one_mul, mul_one, implies_true]
+    inv_mem' := by
+      intro x hx
+      simp_all only [Set.mem_ofPred_eq]
+      intro g
+      have := hx g
+      apply_fun (· * x⁻¹) at this
+      group at this
+      apply_fun (x⁻¹ * ·) at this
+      group at this
+      symm at this
+      simp_all only [Int.reduceNeg, zpow_neg, zpow_one]
+  }
+
+  simp only [Subgroup.coe_set_mk, Submonoid.coe_set_mk, Subsemigroup.coe_set_mk]
 
 
 /-- **Question 4.**
@@ -104,7 +131,13 @@ In the additive group `ZMod 12`, the element `3` has order `4`.
 
 (`addOrderOf x` is the least `n > 0` with `n • x = 0`.) -/
 theorem q4_orderOf_concrete : addOrderOf (3 : ZMod 12) = 4 := by
-  sorry
+  -- 1514-1535
+  rw [addOrderOf_eq_iff]
+  constructor
+  · decide
+  · intro m htop hbot
+    interval_cases m <;> decide
+  · decide
 
 
 /-- **Question 5.**
@@ -145,7 +178,7 @@ Show that `Q₈` is non-abelian by checking that `i` and `j` do not commute. -/
 theorem q8_q8_noncommutative :
     (QuaternionGroup.a 1 : QuaternionGroup 2) * QuaternionGroup.xa 0
       ≠ QuaternionGroup.xa 0 * QuaternionGroup.a 1 := by
-  sorry
+  decide
 
 
 /-- **Question 9.**
@@ -159,6 +192,22 @@ Prove without using the packaged `CompleteLattice (Subgroup G)` structure
 (`Subgroup.instCompleteLattice`) or `Subgroup.instInfSet`. -/
 theorem q9_subgroup_inter_glb {ι : Type*} (H : ι → Subgroup G) :
     ∃ K : Subgroup G, (∀ i, K ≤ H i) ∧ (∀ L : Subgroup G, (∀ i, L ≤ H i) → L ≤ K) := by
-  sorry
+  use {
+    carrier := ⋂ i, (H i : Set G)
+    mul_mem' := by
+      simp only [Set.mem_iInter, SetLike.mem_coe]
+      intro a b ha hb i
+      specialize ha i
+      specialize hb i
+      exact (Subgroup.mul_mem_cancel_right (H i) hb).mpr ha
+    one_mem' := by simp only [Set.mem_iInter, SetLike.mem_coe, one_mem, implies_true]
+    inv_mem' := by
+      intro x hx
+      simp_all only [Set.mem_iInter, SetLike.mem_coe, inv_mem_iff, implies_true]
+  }
+
+  constructor
+  · sorry
+  · sorry
 
 end Exercises.GroupTheory.Groups
