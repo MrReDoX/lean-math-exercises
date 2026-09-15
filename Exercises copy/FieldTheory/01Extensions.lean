@@ -85,7 +85,32 @@ The extension `ℂ / ℝ` has degree `2`.
 
 Prove without using `Complex.finrank_real_complex` or `Complex.basisOneI`. -/
 theorem q4_degree_complex_real : Module.finrank ℝ ℂ = 2 := by
-  sorry
+  let b : Module.Basis (Fin 2) ℝ ℂ := Module.Basis.ofEquivFun {
+    toFun := fun z ↦ ![(z.re : ℝ), z.im]
+    map_add' := by
+      intro z w
+      simp only [Complex.add_re, Complex.add_im, Matrix.add_cons, Matrix.head_cons,
+        Matrix.tail_cons, Matrix.empty_add_empty]
+    map_smul' := by
+      intro α z
+      simp only [Complex.real_smul, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
+        sub_zero, Complex.mul_im, add_zero, RingHom.id_apply, Matrix.smul_cons, smul_eq_mul,
+        Matrix.smul_empty]
+    invFun := fun v ↦ ⟨v 0, v 1⟩
+    left_inv := by
+      unfold Function.LeftInverse
+      simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+        Complex.eta, implies_true]
+    right_inv := by
+      unfold Function.RightInverse Function.LeftInverse
+      simp only [Fin.isValue]
+      intro x
+      ext i
+      fin_cases i <;> simp
+  }
+
+  rw [Module.finrank_eq_card_basis b]
+  simp only [Fintype.card_fin]
 
 
 /-- **Question 5.**
@@ -93,14 +118,20 @@ theorem q4_degree_complex_real : Module.finrank ℝ ℂ = 2 := by
 The polynomial `X² + 1` vanishes at `i`. -/
 theorem q5_i_root :
     (Polynomial.X ^ 2 + Polynomial.C 1 : ℝ[X]).eval₂ (algebraMap ℝ ℂ) Complex.I = 0 := by
-  sorry
+  simp only [map_one, Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Complex.I_sq,
+    Polynomial.eval₂_one, neg_add_cancel]
 
 
 /-- **Question 6.**
 
 The element `i` is integral over `ℝ`. -/
 theorem q6_i_integral : IsIntegral ℝ Complex.I := by
-  sorry
+  use Polynomial.X ^ 2 + 1
+  simp only [Polynomial.eval₂_add, Polynomial.eval₂_X_pow, Complex.I_sq, Polynomial.eval₂_one,
+    neg_add_cancel, and_true]
+  rw [Polynomial.Monic, Polynomial.leadingCoeff]
+  simp only [Polynomial.coeff_natDegree, Order.lt_two_iff, zero_le,
+    Polynomial.leadingCoeff_X_pow_add_one]
 
 
 /-- **Question 7.**
@@ -108,7 +139,21 @@ theorem q6_i_integral : IsIntegral ℝ Complex.I := by
 Every `z ∈ ℂ` satisfies `z² - 2 Re(z) z + |z|² = 0`. -/
 theorem q7_complex_quadratic_relation (z : ℂ) :
     z ^ 2 - ((2 * z.re : ℝ) : ℂ) * z + ((Complex.normSq z : ℝ) : ℂ) = 0 := by
-  sorry
+  apply Complex.ext
+  · rw [Complex.normSq]
+    simp only [Complex.ofReal_mul, Complex.ofReal_ofNat, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk,
+      Complex.ofReal_add, Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.re_ofNat,
+      Complex.ofReal_re, Complex.im_ofNat, Complex.ofReal_im, mul_zero, sub_zero, Complex.mul_im,
+      zero_mul, add_zero, Complex.zero_re]
+    rw [pow_two]
+    simp only [Complex.mul_re]
+    ring_nf
+  · rw [Complex.normSq, pow_two]
+    simp only [Complex.ofReal_mul, Complex.ofReal_ofNat, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk,
+      Complex.ofReal_add, Complex.add_im, Complex.sub_im, Complex.mul_im, Complex.mul_re,
+      Complex.re_ofNat, Complex.ofReal_re, Complex.im_ofNat, Complex.ofReal_im, mul_zero, sub_zero,
+      zero_mul, add_zero, Complex.zero_im]
+    ring_nf
 
 
 /-- **Question 8.**

@@ -72,7 +72,9 @@ Before finding the order of `g^k`, translate the question into arithmetic: a pow
 identity exactly when the order of `g` divides the corresponding product of exponents. -/
 theorem q1_powerOf_pow_eq_one_iff [Finite G] (g : G) (k m : ℕ) :
     (g ^ k) ^ m = 1 ↔ orderOf g ∣ k * m := by
-  sorry
+  constructor <;> intro h
+  · sorry
+  · sorry
 
 
 /-- **Question 2.**

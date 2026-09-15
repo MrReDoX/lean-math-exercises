@@ -207,7 +207,15 @@ theorem q9_subgroup_inter_glb {ι : Type*} (H : ι → Subgroup G) :
   }
 
   constructor
-  · sorry
-  · sorry
+  · dsimp [(· ≤ ·)]
+    simp only [Subgroup.mem_mk, Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_iInter,
+      SetLike.mem_coe]
+    intro i x hx
+    simp_all only
+  · dsimp [LE.le]
+    simp only [Subgroup.mem_mk, Submonoid.mem_mk, Subsemigroup.mem_mk, Set.mem_iInter,
+      SetLike.mem_coe]
+    intro L hL x hx i
+    simp_all only
 
 end Exercises.GroupTheory.Groups
