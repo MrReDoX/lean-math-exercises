@@ -163,8 +163,27 @@ Every complex number is integral over `ℝ`.
 Prove directly from a quadratic relation, without using `IsAlgebraic.of_finite` or
 `Algebra.IsAlgebraic.isAlgebraic`. -/
 theorem q8_every_complex_integral (z : ℂ) : IsIntegral ℝ z := by
-  sorry
-
+  use Polynomial.X ^ 2 - Polynomial.C (2 * z.re) * Polynomial.X + Polynomial.C (Complex.normSq z)
+  simp only [map_mul, Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_X_pow,
+    Polynomial.eval₂_mul, Polynomial.eval₂_C, Complex.coe_algebraMap, Complex.ofReal_ofNat,
+    Polynomial.eval₂_X]
+  apply And.intro
+  · monicity!
+  · unfold Complex.normSq
+    simp only [MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, Complex.ofReal_add, Complex.ofReal_mul]
+    ring_nf
+    rw [Complex.ext_iff]
+    constructor
+    · repeat rw [pow_two]
+      simp only [Complex.add_re, Complex.neg_re, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, mul_zero, sub_zero, Complex.re_ofNat, Complex.mul_im, zero_add,
+        Complex.im_ofNat, Complex.zero_re]
+      ring_nf
+    · repeat rw [pow_two]
+      simp only [Complex.add_im, Complex.neg_im, Complex.mul_im, Complex.mul_re, Complex.ofReal_re,
+        Complex.ofReal_im, mul_zero, sub_zero, Complex.im_ofNat, zero_add, Complex.re_ofNat,
+        zero_mul, add_zero, Complex.zero_im]
+      ring_nf
 
 /-- **Question 9.**
 
@@ -172,7 +191,6 @@ Inside `ℂ / ℝ`, the simple extension `ℝ(i)` is all of `ℂ`. -/
 theorem q9_complex_is_generated_by_i :
     IntermediateField.adjoin ℝ ({Complex.I} : Set ℂ) = ⊤ := by
   sorry
-
 
 /-- **Question 10.**
 
