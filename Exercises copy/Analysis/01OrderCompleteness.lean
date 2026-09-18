@@ -52,7 +52,19 @@ end
 Every `x ∈ ℝ` can be written uniquely as `x = z + u`, where `z ∈ ℤ` and `0 ≤ u < 1`. -/
 theorem q1_integer_fractional_decomposition (x : ℝ) :
     ∃! p : ℤ × ℝ, x = (p.1 : ℝ) + p.2 ∧ 0 ≤ p.2 ∧ p.2 < 1 := by
-  sorry
+  use ⟨Int.floor x, Int.fract x⟩
+  -- simp only [Int.floor_add_fract, Int.fract_nonneg, true_and, and_imp, Prod.forall, Prod.mk.injEq]
+  constructor
+  · simp only [Int.floor_add_fract, Int.fract_nonneg, true_and]
+    exact Int.fract_lt_one x
+  · simp only [and_imp, Prod.forall, Prod.mk.injEq]
+    intro a b a_1 a_2 a_3
+    subst a_1
+    simp_all only [Int.floor_intCast_add, left_eq_add, Int.floor_eq_zero_iff, mem_Ico, and_self,
+      Int.fract_intCast_add, true_and]
+    symm
+    rw [Int.fract_eq_self]
+    grind only
 
 
 /-- **Question 2.**
@@ -61,7 +73,11 @@ For every `x ∈ ℝ`, there exists `n ∈ ℕ` such that `x < n`.
 
 Prove without using `exists_nat_gt`. -/
 theorem q2_naturals_unbounded (x : ℝ) : ∃ n : ℕ, x < n := by
-  sorry
+  use Nat.ceil x + 1
+  push_cast
+  calc
+    x ≤ (Nat.ceil x : ℝ) := by exact Nat.le_ceil x
+    _ < (Nat.ceil x : ℝ) + 1 := by linarith
 
 
 /-- **Question 3.**
@@ -71,7 +87,15 @@ For every `ε > 0`, there exists `n ∈ ℕ` with `0 < n` and `1/n < ε`.
 Prove without using `tendsto_one_div_atTop_nhds_zero_nat`. -/
 theorem q3_archimedean_reciprocal {ε : ℝ} (hε : 0 < ε) :
     ∃ n : ℕ, 0 < n ∧ 1 / (n : ℝ) < ε := by
-  sorry
+  use Nat.ceil (1 / ε) + 1
+  constructor
+  · nlinarith
+  · rw [div_lt_iff₀]
+    · push_cast
+      have := Nat.le_ceil (1 / ε)
+      field_simp at *
+      grind only
+    · grind only
 
 
 /-- **Question 4.**

@@ -207,7 +207,7 @@ theorem q10_quadratic_extension_has_no_proper_intermediate_field (F : Intermedia
 A scalar `a` is a root of the linear polynomial `X - a`. -/
 theorem q11_root_of_linear_polynomial (K : Type*) [Field K] (a : K) :
     (Polynomial.X - Polynomial.C a).eval a = 0 := by
-  sorry
+  simp_all only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C, sub_self]
 
 
 /-- **Question 12.**

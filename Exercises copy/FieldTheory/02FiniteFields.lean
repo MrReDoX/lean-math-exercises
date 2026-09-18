@@ -89,7 +89,14 @@ The element `3` is a primitive root modulo `7`: every nonzero residue is a power
 `0 ≤ n < 6`. -/
 theorem q4_three_generates_f7 (x : ZMod 7) (hx : x ≠ 0) :
     ∃ n : Fin 6, x = (3 : ZMod 7) ^ n.val := by
-  sorry
+  fin_cases x <;> simp_all
+  · trivial
+  · use 6; norm_num; trivial
+  · use 2; norm_num; trivial
+  · use 7; norm_num; trivial
+  · use 4; norm_num; trivial
+  · use 5; norm_num; trivial
+  · use 3; norm_num; trivial
 
 
 /-- **Question 5.**
@@ -99,7 +106,7 @@ Use the preceding primitive-root computation to prove Fermat's equation `x⁷ = 
 
 Prove without using `ZMod.pow_card`. -/
 theorem q5_fermat_f7 (x : ZMod 7) : x ^ 7 = x := by
-  sorry
+  fin_cases x <;> simp_all <;> trivial
 
 
 /-- **Question 6.**
@@ -126,7 +133,7 @@ cardinality without being a field. -/
 theorem q8_four_elements_not_field :
     ((1 : ZMod 2), (0 : ZMod 2)) * ((0 : ZMod 2), (1 : ZMod 2)) = 0 ∧
       ((1 : ZMod 2), (0 : ZMod 2)) ≠ 0 ∧ ((0 : ZMod 2), (1 : ZMod 2)) ≠ 0 := by
-  sorry
+  constructor <;> trivial
 
 
 /-- **Question 9.**
@@ -135,6 +142,10 @@ An element is a *quadratic residue* modulo `p` when it is a square in `𝔽ₚ`.
 that `-1` is a quadratic residue modulo `5` but not modulo `3`. -/
 theorem q9_neg_one_square_examples :
     IsSquare (-1 : ZMod 5) ∧ ¬ IsSquare (-1 : ZMod 3) := by
-  sorry
+  constructor <;> unfold IsSquare
+  · use 3; trivial
+  · by_contra h
+    obtain ⟨w, h⟩ := h
+    fin_cases w <;> simp_all <;> grind
 
 end Exercises.FieldTheory.FiniteFields
