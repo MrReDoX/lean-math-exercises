@@ -105,7 +105,33 @@ If `x < y` in `ℝ`, there exists `q ∈ ℚ` with `x < q < y`.
 Prove without using `exists_rat_btwn`. -/
 theorem q4_rational_between {x y : ℝ} (hxy : x < y) :
     ∃ q : ℚ, x < (q : ℝ) ∧ (q : ℝ) < y := by
-  sorry
+  have hsub : 0 < y - x := by nlinarith
+  obtain ⟨n, hn⟩ := exists_nat_gt (1 / (y - x))
+  have hn_pos : (0 : ℝ) < n := by
+    by_contra! h
+    have : n = 0 := by simp_all only [sub_pos, one_div, Nat.cast_nonpos]
+    rw [this] at hn
+    field_simp at *
+    ring_nf at hn
+    grind
+
+  have h_gap : 1 < (n : ℝ) * (y - x) := by
+    field_simp at *
+    grind
+
+  set m : ℤ := Int.floor ((n : ℝ) * x) + 1
+
+  have h_floor := Int.floor_le ((n : ℝ) * x)
+  have h_ceil := Int.lt_floor_add_one ((n : ℝ) * x)
+
+  use m / n
+  have hq_eq : ((m / n : ℚ) : ℝ) = (m : ℝ) / (n : ℝ) := by push_cast; rfl
+  rw [hq_eq]
+
+  field_simp at *
+  push_cast at *
+
+  constructor <;> grind
 
 
 /-- **Question 5.**
@@ -115,7 +141,10 @@ For `x ∈ ℝ` and `ε > 0`, there exists `q ∈ ℚ` such that `|x - q| < ε`.
 Prove without using `Rat.denseRange_cast`. -/
 theorem q5_rational_approximation (x : ℝ) {ε : ℝ} (hε : 0 < ε) :
     ∃ q : ℚ, |x - (q : ℝ)| < ε := by
-  sorry
+  obtain ⟨q, hx, hq⟩ := q4_rational_between (show x < x + ε by grind only)
+  use q
+  rw [@abs_sub_lt_iff]
+  constructor <;> grind
 
 
 /-- **Question 6.**
@@ -126,7 +155,10 @@ If `A ⊆ ℝ` is nonempty and bounded above, then for every `ε > 0` there is `
 Prove without using `lt_csSup_iff`. -/
 theorem q6_sup_approximation {A : Set ℝ} (hA : A.Nonempty) (_hAb : BddAbove A) {ε : ℝ}
     (hε : 0 < ε) : ∃ a ∈ A, sSup A - ε < a := by
-  sorry
+  by_contra! h
+  have h_bdd : sSup A - ε ∈ upperBounds A := by exact h
+  have h_min : sSup A ≤ sSup A - ε := by exact (csSup_le_iff _hAb hA).mpr h
+  grind only
 
 
 /-- **Question 7.**
@@ -137,7 +169,9 @@ If `A ⊆ ℝ` is nonempty and bounded above, then
 Prove without using `csSup_add`. -/
 theorem q7_sup_translate {A : Set ℝ} (hA : A.Nonempty) (hAb : BddAbove A) (t : ℝ) :
     sSup {x | ∃ a ∈ A, x = t + a} = t + sSup A := by
-  sorry
+  apply le_antisymm
+  · sorry
+  · sorry
 
 
 /-- **Question 8.**
@@ -160,7 +194,16 @@ def sqrtTwoSet : Set ℝ := {x | 0 ≤ x ∧ x ^ 2 < 2}
 
 For `S = {x ∈ ℝ | 0 ≤ x ∧ x² < 2}`, prove that `S` is nonempty and bounded above. -/
 theorem q9_sqrtTwoSet_nonempty_bddAbove : sqrtTwoSet.Nonempty ∧ BddAbove sqrtTwoSet := by
-  sorry
+  unfold sqrtTwoSet
+  constructor
+  · use 1
+    simp only [mem_ofPred_eq, zero_le_one, one_pow, Nat.one_lt_ofNat, and_self]
+  · unfold BddAbove
+    use 2
+    unfold upperBounds
+    simp only [mem_ofPred_eq, and_imp]
+    intro a hal har
+    nlinarith
 
 
 /-- **Question 10.**
@@ -187,7 +230,10 @@ Let `S = {x ∈ ℝ | 0 ≤ x ∧ x² < 2}` and let `s = sup S`. Prove `s² = 2`
 
 Prove without using `Real.sq_sqrt` or `Real.sqrt_sq`. -/
 theorem q12_square_root_two_from_supremum : sSup sqrtTwoSet ^ 2 = 2 := by
-  sorry
+  have := q11_sSup_sqrtTwoSet_sq_not_gt
+  have := q10_sSup_sqrtTwoSet_sq_not_lt
+
+  apply le_antisymm <;> grind only
 
 
 /-- **Question 13.**

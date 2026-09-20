@@ -93,6 +93,15 @@ Prove without using `exists_mem_Icc_isFixedPt`. -/
 theorem q3_interval_self_map_fixed_point (f : ℝ → ℝ) (hf : ContinuousOn f (Icc 0 1))
     (hself : MapsTo f (Icc 0 1) (Icc 0 1)) :
     ∃ x ∈ Icc (0 : ℝ) 1, f x = x := by
+  let g := fun x ↦ f x - x
+
+  have hg : ContinuousOn g (Icc 0 1) := by sorry
+
+  have hg0 : g 0 ≥ 0 := by sorry
+  have hg1 : g 1 ≤ 0 := by sorry
+
+  have cal := intermediate_value_Icc' (by simp_all [g] : (0 : ℝ) ≤ 1) hg
+
   sorry
 
 
