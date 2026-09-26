@@ -82,7 +82,11 @@ Question 1 supplies the exponential estimate used here.
 Prove without using `Real.log_le_sub_one_of_pos`. -/
 theorem q2_log_tangent_bound {x : ℝ} (hx : 0 < x) :
     Real.log x ≤ x - 1 := by
-  sorry
+  have := q1_exp_tangent_bound (x - 1)
+  ring_nf at this
+  have := Real.log_le_log hx this
+  simp only [Real.log_exp, le_neg_add_iff_add_le] at this
+  grind only
 
 
 /-- **Question 3.**
@@ -93,7 +97,35 @@ Prove without using `Real.abs_sin_le_abs`, `Real.abs_sin_sub_sin_le`, or
 `Real.lipschitzWith_sin`. -/
 theorem q3_sin_lipschitz (x : ℝ) :
     |Real.sin x| ≤ |x| := by
-  sorry
+  by_cases h : x = 0
+  · rw [h]
+    simp only [Real.sin_zero, abs_zero, Std.le_refl]
+  · have : |Real.sin x| = |Real.sin (|x|)| := by
+      by_cases mm : x > 0
+      · grind only [= abs.eq_1, = max_def, #5d41]
+      · have : x < 0 := by by_contra! h; grind only
+        simp only [abs_of_neg this, Real.sin_neg, abs_neg]
+    rw [this]
+    let y := |x|
+    change |Real.sin y| ≤ y
+    have : 0 < y := by grind only [= abs.eq_1, = max_def, #5d41]
+    have := exists_hasDerivAt_eq_slope
+              Real.sin
+              Real.cos
+              this
+              Real.continuous_sin.continuousOn
+              (fun t _ => Real.hasDerivAt_sin t)
+
+    choose c hc using this
+    simp_all only [abs_pos, ne_eq, not_false_eq_true, mem_Ioo, Real.sin_zero, sub_zero, ge_iff_le, y]
+    obtain ⟨left, right⟩ := hc
+    obtain ⟨left, right_1⟩ := left
+    field_simp at *
+    apply_fun (|·|) at right
+    simp at right
+    have : |Real.cos c| ≤ 1 := by exact Real.abs_cos_le_one c
+    symm at right
+    simp_all only [abs_pos, ne_eq, not_false_eq_true, mul_le_iff_le_one_right]
 
 
 /-- **Question 4.**
