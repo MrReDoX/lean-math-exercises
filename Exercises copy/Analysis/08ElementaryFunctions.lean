@@ -137,7 +137,21 @@ Question 3 supplies the sine estimate used for the lower bound.
 Prove without using `Real.one_sub_sq_div_two_le_cos` or `Real.cos_le_one`. -/
 theorem q4_cos_quadratic_bound (x : ℝ) :
     1 - x ^ 2 / 2 ≤ Real.cos x ∧ Real.cos x ≤ 1 := by
-  sorry
+  constructor
+  · suffices 1 - Real.cos x ≤ x ^ 2 / 2 by grind only
+    have := Real.cos_two_mul_eq_one_sub (x / 2)
+    ring_nf at this
+    rw [this]
+    ring_nf; field_simp;
+    suffices Real.sin (x / 2) ^ 2 ≤ (x / 2) ^ 2 by linarith
+    have := q3_sin_lipschitz (x / 2)
+    have h_sq : |Real.sin (x / 2)| ^ 2 ≤ |x / 2| ^ 2 := by gcongr
+    simp_all only [one_div, sq_abs]
+  · have : 1 - Real.cos x = 2 * (Real.sin (x / 2)) ^ 2 := by
+      have := Real.cos_two_mul_eq_one_sub (x / 2)
+      ring_nf at *
+      simp_all only [one_div, sub_sub_cancel]
+    nlinarith
 
 
 /-- **Question 5.**

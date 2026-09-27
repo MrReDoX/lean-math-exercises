@@ -115,7 +115,7 @@ If two elements are fixed by Frobenius in a commutative ring of prime characteri
 their sum is fixed by Frobenius as well. -/
 theorem q6_frobenius_fixed_add (p : ℕ) [Fact p.Prime] (R : Type*) [CommRing R] [CharP R p]
     (x y : R) (hx : x ^ p = x) (hy : y ^ p = y) : (x + y) ^ p = x + y := by
-  sorry
+
 
 
 /-- **Question 7.**

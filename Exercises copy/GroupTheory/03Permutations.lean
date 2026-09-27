@@ -62,14 +62,15 @@ Write the product of adjacent transpositions `(0 1)(1 2)(2 3)` in cycle form: it
 `finRotate 4` (the cycle `0 → 1 → 2 → 3 → 0`). -/
 theorem q1_swap_product :
     swap (0 : Fin 4) 1 * swap 1 2 * swap 2 3 = finRotate 4 := by
-  sorry
+  ext x
+  fin_cases x <;> simp <;> decide
 
 
 /-- **Question 2.**
 
 A transposition is odd: `sign (swap 0 1) = -1` in `S₄`. -/
 theorem q2_sign_swap : Perm.sign (swap (0 : Fin 4) 1) = -1 := by
-  sorry
+  decide
 
 
 /-- **Question 3.**
@@ -78,7 +79,7 @@ The sign of a `k`-cycle is `(-1)^{k-1}`: the 4-cycle `finRotate 4` is odd, the 5
 is even. -/
 theorem q3_sign_cycle_length :
     Perm.sign (finRotate 4) = -1 ∧ Perm.sign (finRotate 5) = 1 := by
-  sorry
+  decide
 
 
 /-- **Question 4.**
@@ -96,7 +97,7 @@ theorem q4_swaps_generate (σ : Perm (Fin 4)) :
 
 A 3-cycle is even: `sign = 1`. -/
 theorem q5_three_cycle_even : Perm.sign (swap (0 : Fin 5) 1 * swap 1 2) = 1 := by
-  sorry
+  decide
 
 
 /-- **Question 6.**
