@@ -65,7 +65,23 @@ Every left coset `gH` has the same size as `H`: the coset `g • ↑H` and `↑H
 (`Set.ncard`). -/
 theorem q1_coset_card (g : G) (H : Subgroup G) :
     (g • (H : Set G)).ncard = (H : Set G).ncard := by
-  sorry
+  have h_bij : Set.BijOn (fun x => g⁻¹ • x) (g • (H : Set G)) (H : Set G) := by
+    unfold Set.BijOn
+    constructor
+    · unfold Set.MapsTo
+      intro x hx
+      simp_all only [smul_eq_mul, SetLike.mem_coe]
+      rw [mem_leftCoset_iff] at hx
+      trivial
+    · constructor
+      · unfold Set.InjOn
+        intro x hx y hy hxy
+        simp_all only [smul_eq_mul, mul_right_inj]
+      · unfold Set.SurjOn
+        intro h hh
+        simp_all only [SetLike.mem_coe, smul_eq_mul, Set.image_mul_left, inv_inv, Set.mem_preimage]
+        exact mem_leftCoset g hh
+  exact h_bij.ncard_eq
 
 
 /-- **Question 2.**
@@ -93,8 +109,33 @@ A group of prime order is cyclic.
 Prove without using `isCyclic_of_prime_card`. -/
 theorem q4_prime_order_cyclic [Finite G] {p : ℕ} (hp : p.Prime)
     (hcard : Nat.card G = p) : IsCyclic G := by
-  sorry
-
+  have : Nontrivial G := by
+      by_contra! h
+      subst hcard
+      simp_all only [Nat.card_unique]
+      have fwd : False := Nat.prime_one_false hp
+      clear hp
+      simp_all only
+  choose g hg using exists_ne (1 : G)
+  let H := Subgroup.closure {g}
+  have h_non_trivial : Nontrivial H := by
+    have hgH := Subgroup.subset_closure (Set.mem_singleton g)
+    exact ⟨⟨⟨g, hgH⟩, 1, fun h => hg (congrArg Subtype.val h)⟩⟩
+  have h_dvd : Nat.card H ∣ p := by
+    rw [← hcard]
+    exact q2_lagrange H
+  have h_card_eq : Nat.card H = p := by
+    rcases (Nat.dvd_prime hp).mp h_dvd with h | h
+    · exfalso
+      have hs : Subsingleton H := (Nat.card_eq_one_iff_unique.mp h).1
+      exact (not_nontrivial_iff_subsingleton.mpr hs) h_non_trivial
+    · exact h
+  have h_g_eq_h : H = ⊤ := by
+    subst hcard
+    simp_all only [ne_eq, Subgroup.card_eq_iff_eq_top, H]
+  refine isCyclic_iff_exists_zpowers_eq_top.mpr ⟨g, ?_⟩
+  rw [Subgroup.zpowers_eq_closure]
+  exact h_g_eq_h
 
 /-- **Question 5.**
 
