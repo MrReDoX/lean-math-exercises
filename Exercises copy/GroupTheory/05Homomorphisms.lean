@@ -53,8 +53,8 @@ end
 A homomorphism sends inverses to inverses. Show that `f a⁻¹` is an inverse of `f a`, then use
 uniqueness of inverses. -/
 theorem q1_map_inv (f : G →* H) (a : G) : f a⁻¹ = (f a)⁻¹ := by
-  sorry
-
+  rw [eq_inv_iff_mul_eq_one, ← f.map_mul, inv_mul_cancel]
+  exact f.map_one
 
 /-- **Question 2.**
 
@@ -62,8 +62,32 @@ A homomorphism is injective exactly when its kernel is trivial.
 
 Prove without using `MonoidHom.ker_eq_bot_iff`. -/
 theorem q2_injective_iff_ker (f : G →* H) : Function.Injective f ↔ f.ker = ⊥ := by
-  sorry
-
+  constructor <;> intro h
+  · ext g
+    constructor <;> intro hg
+    · rw [MonoidHom.mem_ker] at hg
+      rw [@Subgroup.mem_bot]
+      have : f 1 = 1 := by exact f.map_one
+      rw [← this] at hg
+      exact h hg
+    ·
+      rw [Subgroup.mem_bot] at hg
+      rw [MonoidHom.mem_ker, hg]
+      exact f.map_one
+  · intro x y hxy
+    suffices h : x * y⁻¹ = 1 by
+      -- Математическое умножение на y справа:
+      have h_mul := congrArg (· * y) h
+      group at h_mul
+      exact h_mul
+    -- Доказываем само suffices, умножая hxy на (f y)⁻¹ справа:
+    have h_f := congrArg (· * (f y)⁻¹) hxy
+    group at h_f
+    have hmem : x * y⁻¹ ∈ f.ker := by
+      rw [MonoidHom.mem_ker, map_mul, map_inv, hxy]
+      simp only [mul_inv_cancel]
+    rw [h, Subgroup.mem_bot] at hmem
+    exact hmem
 
 /-- **Question 3.**
 
@@ -71,7 +95,17 @@ The kernel of every group homomorphism is a normal subgroup.
 
 Prove without using `MonoidHom.normal_ker`. -/
 theorem q3_ker_normal (f : G →* H) : f.ker.Normal := by
-  sorry
+  rw [@normal_iff_eq_cosets]
+  intro g
+  ext h
+  constructor <;> intro hyp
+  · rw [@mem_rightCoset_iff]
+    rw [@mem_leftCoset_iff] at hyp
+    rw [SetLike.mem_coe, MonoidHom.mem_ker, map_mul, map_inv, ← f.map_inv] at *
+    apply_fun (f g * ·) at hyp
+    rw [← mul_assoc, ← f.map_mul, mul_inv_cancel, f.map_one, one_mul, mul_one] at hyp
+    rw [hyp, ← f.map_mul, mul_inv_cancel, f.map_one]
+  · done
 
 
 /-- **Question 4.**
