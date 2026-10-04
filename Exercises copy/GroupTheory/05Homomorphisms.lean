@@ -212,8 +212,18 @@ theorem q11_opposite_iso :
     ∃ e : G ≃* Gᵐᵒᵖ, ∀ x, e x = MulOpposite.op x⁻¹ := by
   use {
     toFun := fun g ↦ MulOpposite.op g⁻¹
-    invFun := fun g ↦ MulOpposite.unop g
+    invFun := fun g ↦ (MulOpposite.unop g)⁻¹
     map_mul' := by intro x y; rw [← MulOpposite.op_mul, MulOpposite.op_inj]; group
+    left_inv := by
+      unfold Function.LeftInverse
+      intro g
+      simp only [MulOpposite.op_inv, MulOpposite.unop_inv, MulOpposite.unop_op]
+      rw [@inv_eq_iff_mul_eq_one]
+      group
+    right_inv := by
+      unfold Function.RightInverse Function.LeftInverse
+      intro g
+      simp only [inv_inv, MulOpposite.op_unop]
   }
 
   intro g

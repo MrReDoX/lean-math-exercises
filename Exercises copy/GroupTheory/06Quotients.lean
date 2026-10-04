@@ -58,7 +58,11 @@ A subgroup is normal exactly when it is closed under every conjugation; this is
 the conjugation form of the condition that left and right cosets agree. -/
 theorem q1_normal_iff_conjugates (N : Subgroup G) :
     N.Normal ↔ ∀ n, n ∈ N → ∀ g : G, g * n * g⁻¹ ∈ N := by
-  sorry
+  constructor <;> intro h
+  · intro g hg g'
+    rw [normal_iff_eq_cosets] at h
+    sorry
+  · sorry
 
 
 /-- **Question 2.**
@@ -75,8 +79,31 @@ theorem q2_index_two_normal (N : Subgroup G) (hindex : N.index = 2) : N.Normal :
 The first isomorphism theorem: quotienting by a homomorphism's kernel gives its image.
 
 Prove without using `QuotientGroup.quotientKerEquivRange`. -/
-theorem q3_first_iso (f : G →* H) : Nonempty (G ⧸ f.ker ≃* f.range) := by
-  sorry
+theorem q3_first_iso (f : G →* H) : Nonempty (G ⧸ f.ker ≃* f.range) :=
+  ⟨MulEquiv.ofBijective (QuotientGroup.lift f.ker f.rangeRestrict (by
+    simp only [MonoidHom.ker_rangeRestrict, Std.le_refl]
+  ))
+    ⟨by
+      unfold Function.Injective
+      intro x y hxy
+      induction x using QuotientGroup.induction_on with
+      | H a =>
+        induction y using QuotientGroup.induction_on with
+        | H b =>
+          simp_all only [QuotientGroup.lift_mk]
+          have h : f a = f b := congrArg Subtype.val hxy
+          rw [QuotientGroup.eq, f.mem_ker, f.map_mul, ← h, ← f.map_mul]
+          group
+          exact f.map_one
+    , by
+      unfold Function.Surjective
+      intro b
+      obtain ⟨y, g, hg⟩ := b
+      use g
+      simp only [QuotientGroup.lift_mk]
+      subst hg
+      rfl
+    ⟩⟩
 
 
 /-- **Question 4.**
@@ -87,7 +114,25 @@ projection.
 Prove without using `MonoidHom.normal_ker` or `QuotientGroup.ker_mk'`. -/
 theorem q4_normal_iff_kernel (f : G →* H) (N : Subgroup G) [N.Normal] :
     f.ker.Normal ∧ (QuotientGroup.mk' N).ker = N := by
-  sorry
+  constructor
+  · rw [@normal_iff_eq_cosets]
+    intro g
+    ext h
+    constructor <;> intro hyp
+    · rw [@mem_rightCoset_iff]
+      rw [@mem_leftCoset_iff] at hyp
+      rw [SetLike.mem_coe, MonoidHom.mem_ker, map_mul, map_inv, ← f.map_inv] at *
+      apply_fun (f g * ·) at hyp
+      rw [← mul_assoc, ← f.map_mul, mul_inv_cancel, f.map_one, one_mul, mul_one] at hyp
+      rw [hyp, ← f.map_mul, mul_inv_cancel, f.map_one]
+    · rw [mem_leftCoset_iff]
+      rw [mem_rightCoset_iff] at hyp
+      rw [SetLike.mem_coe, MonoidHom.mem_ker, map_mul, map_inv, ← f.map_inv] at *
+      apply_fun (· * f g) at hyp
+      rw [mul_assoc, ← f.map_mul, inv_mul_cancel, f.map_one, one_mul, mul_one] at hyp
+      rw [hyp, ← f.map_mul, inv_mul_cancel, f.map_one]
+  · ext g
+    constructor <;> intro hg <;> rw [@MonoidHom.mem_ker] at * <;> simp_all only [QuotientGroup.mk'_apply, QuotientGroup.eq_one_iff]
 
 
 /-- **Question 5.**
@@ -142,7 +187,15 @@ Prove without using `QuotientGroup.quotientBot` or
 `QuotientGroup.subsingleton_quotient_top`. -/
 theorem q9_quotient_trivial : Nonempty (G ⧸ (⊥ : Subgroup G) ≃* G) ∧
     Subsingleton (G ⧸ (⊤ : Subgroup G)) := by
-  sorry
+  constructor
+  · have hsurj : Function.Surjective (MonoidHom.id G) := by intro g; use g; simp only [MonoidHom.id_apply]
+    have first_iso := QuotientGroup.quotientKerEquivOfSurjective (MonoidHom.id G) hsurj
+    exact Nonempty.intro first_iso
+  · constructor
+    intro a b
+    induction a using QuotientGroup.induction_on
+    induction b using QuotientGroup.induction_on
+    exact QuotientGroup.eq.mpr trivial
 
 
 /-- **Question 10.**
@@ -176,8 +229,11 @@ surjective, and the image of the first is the kernel of the second. -/
 theorem q11_short_exact_sequence (A B : Type*) [Group A] [Group B] :
     Function.Injective (firstFactor A B) ∧ Function.Surjective (secondProjection A B) ∧
       (firstFactor A B).range = (secondProjection A B).ker := by
-  sorry
-
+  refine ⟨?_, ?_, ?_⟩
+  · intro x y hxy
+    sorry
+  · sorry
+  · sorry
 
 /-- **Question 12.**
 

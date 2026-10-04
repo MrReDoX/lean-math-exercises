@@ -52,7 +52,7 @@ end
 The stabilizer of `x` consists exactly of the group elements that fix `x`. -/
 theorem q1_mem_stabilizer_iff (g : G) (x : X) :
     g ∈ MulAction.stabilizer G x ↔ g • x = x := by
-  sorry
+  constructor <;> intro h <;> rw [@MulAction.mem_stabilizer_iff] at * <;> trivial
 
 
 /-- **Question 2.**
@@ -60,7 +60,21 @@ theorem q1_mem_stabilizer_iff (g : G) (x : X) :
 Any two orbits of an action are equal or disjoint. -/
 theorem q2_orbits_partition (x y : X) : MulAction.orbit G x = MulAction.orbit G y ∨
     Disjoint (MulAction.orbit G x) (MulAction.orbit G y) := by
-  sorry
+  by_cases h : Disjoint (MulAction.orbit G x) (MulAction.orbit G y)
+  · right; trivial
+  · left
+    have : ∃ g, g ∈ MulAction.orbit G x ∩ MulAction.orbit G y := by sorry
+    simp_all only [Set.mem_inter_iff]
+    obtain ⟨w, h_1⟩ := this
+    obtain ⟨left, right⟩ := h_1
+    rw [MulAction.mem_orbit_iff] at *
+    obtain ⟨w_1, h_1⟩ := left
+    obtain ⟨w_2, h_2⟩ := right
+    subst h_1
+    ext g
+    constructor <;> intro h
+    sorry
+
 
 
 /-- **Question 3.**
