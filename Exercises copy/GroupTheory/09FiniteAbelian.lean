@@ -44,15 +44,27 @@ end
 `Z/4Z` is not additively isomorphic to `Z/2Z × Z/2Z`: every element of the
 latter is killed by two, whereas `1 : Z/4Z` is not. -/
 theorem q1_zmod4_not_prod : ¬ Nonempty (ZMod 4 ≃+ ZMod 2 × ZMod 2) := by
-  sorry
+  intro h
+  rcases h with ⟨ϕ⟩
+  have : 2 • ϕ 1 = 0 := by
+    rcases ϕ 1 with ⟨a, b⟩
+    ext <;> fin_cases a <;> fin_cases b <;> aesop
+  rw [← map_nsmul ϕ 2 (1 : ZMod 4)] at this
+  simp only [nsmul_eq_mul, Nat.cast_ofNat, mul_one, EmbeddingLike.map_eq_zero_iff] at this
+  grind only
 
 
 /-- **Question 2.**
 
 The element `(1, 0)` in `Z/4Z × Z/2Z` has additive order `4`. -/
 theorem q2_order_zmod4_prod : addOrderOf ((1, 0) : ZMod 4 × ZMod 2) = 4 := by
-  sorry
-
+  rw [addOrderOf_eq_iff]
+  constructor
+  · decide
+  · intro m hm4 hm0
+    by_contra! h
+    interval_cases m <;> simp_all <;> grind
+  · norm_num
 
 /-- **Question 3.**
 
@@ -69,7 +81,10 @@ theorem q3_order_eight_models :
 `Z/8Z` is cyclic: exhibit a generator by checking that `1` has additive
 order eight. -/
 theorem q4_zmod8_cyclic : IsAddCyclic (ZMod 8) := by
-  sorry
+  use 1
+  intro b
+  use b.val
+  simp only [ZMod.natCast_val, zsmul_eq_mul, ZMod.intCast_cast, ZMod.cast_id', id_eq, mul_one]
 
 
 /-- **Question 5.**

@@ -71,7 +71,15 @@ A vector has eigenvalue `λ` exactly when subtracting `λ` times the identity se
 Prove without using `Module.End.mem_eigenspace_iff`. -/
 theorem q1_eigen_iff_ker (f : Module.End K V) (l : K) (v : V) :
     f v = l • v ↔ v ∈ LinearMap.ker (f - l • 1) := by
-  sorry
+  constructor <;> intro h
+  · rw [(f - l • 1).mem_ker]
+    simp only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply]
+    rw [h]
+    module
+  · rw [(f - l • 1).mem_ker] at h
+    apply_fun (· - l • v)
+    simp_all only [LinearMap.sub_apply, LinearMap.smul_apply, Module.End.one_apply, sub_self]
+    exact sub_left_injective
 
 
 /-- **Question 2.**
@@ -104,7 +112,7 @@ Find two eigenpairs of the matrix `!![2,1;1,2]`. -/
 theorem q4_eig_2x2 :
     Matrix.toLin' (!![2, 1; 1, 2] : Matrix (Fin 2) (Fin 2) ℝ) ![1, 1] = (3 : ℝ) • ![1, 1] ∧
     Matrix.toLin' (!![2, 1; 1, 2] : Matrix (Fin 2) (Fin 2) ℝ) ![1, -1] = (1 : ℝ) • ![1, -1] := by
-  sorry
+  constructor <;> ext i <;> fin_cases i <;> simp <;> ring
 
 
 /-- **Question 5.**
@@ -116,7 +124,10 @@ theorem q5_rotation_field_dependence :
       Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℝ) v = μ • v) ∧
     Matrix.toLin' (!![0, -1; 1, 0] : Matrix (Fin 2) (Fin 2) ℂ) ![Complex.I, 1]
       = Complex.I • ![Complex.I, 1] := by
-  sorry
+  constructor
+  · by_contra! h
+    sorry
+  · ext i; fin_cases i <;> simp
 
 
 /-- **Question 6.**
